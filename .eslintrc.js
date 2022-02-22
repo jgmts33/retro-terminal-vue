@@ -21,6 +21,7 @@ module.exports = {
         'max-len': 'off',
         'no-await-in-loop': 'off',
         'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+        'no-continue': 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
         'no-nested-ternary': 'off',
         'no-param-reassign': 'off',

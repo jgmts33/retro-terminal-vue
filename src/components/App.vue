@@ -1,16 +1,16 @@
 <template lang="pug">
 .app(@click='emitClick')
-    home
+    shell
 </template>
 
 <script>
-import Home from '@/bin/Home'
+import Shell from '@/bin/shell'
 import radio from '@/util/radio'
 
 export default {
     name: 'App',
 
-    components: { Home },
+    components: { Shell },
 
     methods: {
         emitClick() {

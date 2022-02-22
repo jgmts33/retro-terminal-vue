@@ -21,11 +21,12 @@ export default {
     },
 
     methods: {
-        async output(message, useSpeech = true) {
-            await sleep(1000)
+        async output(message, opts) {
+            opts = { speak: true, delay: 1000, ...opts }
+            await sleep(opts.delay)
             console.log('Output:', message)
             this.history.push({ input: false, message })
-            if (useSpeech) speak(message)
+            if (opts.speak) speak(message)
         },
 
         input() {

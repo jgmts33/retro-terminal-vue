@@ -1,6 +1,6 @@
 {
   "name": "lsapan",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -27,6 +27,7 @@
     "eslint-plugin-vuejs-accessibility": "^1.1.0",
     "sass": "^1.32.7",
     "sass-loader": "^12.0.0",
-    "vue-cli-plugin-pug": "~2.0.0"
+    "vue-cli-plugin-pug": "~2.0.0",
+    "webpack-import-glob-loader": "git+https://github.com/lsapan/webpack-import-glob-loader.git"
   }
 }

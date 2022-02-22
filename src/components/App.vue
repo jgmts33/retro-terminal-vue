@@ -45,7 +45,11 @@ export default {
 </script>
 
 <style lang="scss">
+html, body {
+    margin: 0;
+}
+
 .app {
-    min-height: 100vh;
+    padding: 10px;
 }
 </style>

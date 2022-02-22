@@ -9,8 +9,7 @@
                 span(
                     contenteditable
                     ref='activeInput'
-                    @input='onInput'
-                    @keyup.enter='$emit("submit", line.entry.trim())'
+                    @keyup.enter='submitEntry'
                 ) {{ line.entry }}
                 .stdio__active
             span(v-else) {{ line.entry }}
@@ -44,12 +43,12 @@ export default {
     },
 
     methods: {
-        onInput(e) {
-            this.history[this.history.length - 1].entry = e.target.innerText  // eslint-disable-line
-        },
-
         focusInput() {
             if (this.inputIdx) this.$refs.activeInput[0].focus()
+        },
+
+        submitEntry(e) {
+            this.$emit('submit', e.target.innerText.trim())
         },
     },
 

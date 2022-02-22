@@ -37,6 +37,7 @@ export default {
 
         handleInput(entry) {
             console.log('Input:', entry)
+            this.history[this.history.length - 1].entry = entry
             this.resolveInput(entry)
             this.resolveInput = null
         },

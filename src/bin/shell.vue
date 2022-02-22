@@ -12,18 +12,19 @@ export default {
         await this.output('Type "help" for more information.')
 
         while (true) { // eslint-disable-line no-constant-condition
-            const input = (await this.input()).split(' ')[0]
-            const binary = binaries[input]
-            if (excludedCommands.includes(input)) {
+            const input = (await this.input()).split(' ')
+            const command = input.shift()
+            const binary = binaries[command]
+            if (excludedCommands.includes(command)) {
                 continue
             } else if (binary) {
                 if (typeof binary.default === 'function') {
-                    await binary.default(this)
+                    await binary.default(this, input)
                 } else {
                     this.$emit('run', binary.default)
                 }
             } else {
-                await this.output(`Unknown command: ${input}`)
+                await this.output(`Unknown command: ${command}`)
             }
         }
     },

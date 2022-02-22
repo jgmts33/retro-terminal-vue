@@ -9,6 +9,9 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "lodash": "^4.17.21",
+    "mitt": "^3.0.0",
+    "sleep-promise": "^9.1.0",
     "vue": "^3.2.13"
   },
   "devDependencies": {

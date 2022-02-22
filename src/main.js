@@ -1,5 +1,8 @@
 import { createApp } from 'vue'
 
-import App from './App.vue'
+import App from '@/components/App.vue'
+import { installRadio } from '@/util/radio'
 
-createApp(App).mount('#app')
+const app = createApp(App)
+installRadio(app)
+app.mount('#app')

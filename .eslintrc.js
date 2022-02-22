@@ -19,6 +19,7 @@ module.exports = {
         'import/no-cycle': 'off',
         indent: ['error', 4],
         'max-len': 'off',
+        'no-await-in-loop': 'off',
         'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
         'no-nested-ternary': 'off',
@@ -29,5 +30,6 @@ module.exports = {
         'prefer-destructuring': 'off',
         radix: ['error', 'as-needed'],
         semi: ['error', 'never'],
+        'vue/multi-word-component-names': 'off',
     },
 }

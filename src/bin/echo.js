@@ -1,4 +1,3 @@
-export default async ({ output }) => {
-    await output('Echo! Echo! Echo!')
-    window.open('https://www.youtube.com/watch?v=CahNAauFgys', '_blank')
+export default async ({ output }, args) => {
+    await output(args.join(' '))
 }

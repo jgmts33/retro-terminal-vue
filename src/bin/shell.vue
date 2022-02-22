@@ -13,7 +13,7 @@ export default {
 
         while (true) { // eslint-disable-line no-constant-condition
             const input = (await this.input()).split(' ')
-            const command = input.shift()
+            const command = input.shift().toLowerCase()
             const binary = binaries[command]
             if (excludedCommands.includes(command)) {
                 continue

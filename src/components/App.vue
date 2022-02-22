@@ -1,11 +1,12 @@
 <template lang="pug">
 .app(@click='emitClick')
-    component(:is='binary' ref='binary' @run='runBinary')
+    component(:is='binary' ref='binary' @run='runBinary' @boot='forceShell')
 </template>
 
 <script>
 import { markRaw } from 'vue'
 
+import Boot from '@/bin/boot'
 import Shell from '@/bin/shell'
 import radio from '@/util/radio'
 
@@ -14,7 +15,7 @@ export default {
 
     data() {
         return {
-            binary: markRaw(Shell),
+            binary: markRaw(Boot),
         }
     },
 
@@ -29,6 +30,16 @@ export default {
             await this.$refs.binary.run()
             this.binary = markRaw(Shell)
         },
+
+        forceShell() {
+            this.binary = markRaw(Shell)
+        },
+    },
+
+    mounted() {
+        this.$listenFor('reboot', () => {
+            this.binary = markRaw(Boot)
+        })
     },
 }
 </script>

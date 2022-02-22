@@ -17,7 +17,11 @@ export default {
             if (excludedCommands.includes(input)) {
                 continue
             } else if (binary) {
-                await binary.default(this)
+                if (typeof binary.default === 'function') {
+                    await binary.default(this)
+                } else {
+                    this.$emit('run', binary.default)
+                }
             } else {
                 await this.output(`Unknown command: ${input}`)
             }

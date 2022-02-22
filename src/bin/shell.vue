@@ -8,7 +8,7 @@ export default {
     extends: Kernel,
 
     async mounted() {
-        await this.output(`${process.env.VUE_APP_FIRST_NAME.toLowerCase()}sapan.com v${process.env.VUE_APP_VERSION} (default, ${process.env.VUE_APP_BUILD_TIMESTAMP})`, { speak: false, delay: 0 })
+        await this.output(`${process.env.VUE_APP_FIRST_NAME.toLowerCase()}sapan.com v${process.env.VUE_APP_VERSION} (default, ${process.env.VUE_APP_BUILD_TIMESTAMP})`, { speak: false, delay: 0, speed: 0 })
         await this.output('Type "help" for more information.')
 
         while (true) { // eslint-disable-line no-constant-condition

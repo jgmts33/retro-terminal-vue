@@ -22,11 +22,24 @@ export default {
 
     methods: {
         async output(message, opts) {
-            opts = { speak: true, delay: 1000, ...opts }
+            opts = {
+                speak: true,
+                delay: 1000,
+                speed: 45,
+                ...opts,
+            }
             await sleep(opts.delay)
             console.log('Output:', message)
-            this.history.push({ input: false, message })
             if (opts.speak) speak(message)
+            const line = { input: false, message: opts.speed ? '' : message }
+            this.history.push(line)
+            if (opts.speed) {
+                const lineIdx = this.history.length - 1
+                for (let c = 0; c < message.length; c++) {
+                    this.history[lineIdx] = { ...line, message: this.history[lineIdx].message + message[c] }
+                    await sleep(opts.speed)
+                }
+            }
         },
 
         input() {

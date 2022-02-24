@@ -1,17 +1,18 @@
 <template lang="pug">
 .stdio
+    input.stdio__input(
+        v-model='entry'
+        ref='activeInput'
+        @keydown.enter.prevent='submitEntry'
+    )
     .stdio__line(v-for='line, lineIdx in history' :key='lineIdx')
         span(v-if='!line.input') {{ line.message }}
 
         template(v-else)
-            span.stdio__caret >
+            span.stdio__prompt >
             template(v-if='inputting && lineIdx === history.length - 1')
-                span(
-                    contenteditable
-                    ref='activeInput'
-                    @keyup.enter='submitEntry'
-                ) {{ line.entry }}
-                .stdio__active
+                | {{ entry }}
+                .stdio__caret
             span(v-else) {{ line.entry }}
 </template>
 
@@ -31,6 +32,12 @@ export default {
         },
     },
 
+    data() {
+        return {
+            entry: '',
+        }
+    },
+
     mounted() {
         this.$listenFor('appClick', this.focusInput)
     },
@@ -44,11 +51,17 @@ export default {
 
     methods: {
         focusInput() {
-            if (this.inputIdx) this.$refs.activeInput[0].focus()
+            if (this.inputIdx) {
+                const input = this.$refs.activeInput
+                input.selectionStart = input.value.length
+                input.selectionEnd = input.value.length
+                input.focus()
+            }
         },
 
-        submitEntry(e) {
-            this.$emit('submit', e.target.innerText.trim())
+        submitEntry() {
+            this.$emit('submit', this.entry.trim())
+            this.entry = ''
         },
     },
 
@@ -63,8 +76,40 @@ export default {
 
 <style lang="scss">
 .stdio {
-    &__caret {
+    &__line {
+        margin-bottom: 3px;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+
+    &__prompt {
         margin-right: 5px;
+    }
+
+    &__input {
+        position: fixed;
+        top: -100px;
+    }
+
+    &__caret {
+        display: inline-block;
+        width: 10px;
+        height: 18px;
+        background: #cde0e0;
+        margin-left: 1px;
+        position: relative;
+        top: 2px;
+        animation: caretblink 1s infinite step-end;
+    }
+}
+
+@keyframes caretblink {
+    0% {
+        background: #cde0e0;
+    }
+
+    50% {
+        background: transparent;
     }
 }
 </style>

@@ -1,6 +1,8 @@
 <template lang="pug">
-.app(@click='emitClick')
-    component(:is='binary' ref='binary' @run='runBinary' @boot='forceShell')
+.screen(@click='emitClick')
+    .screen__lines
+    .screen__content
+        component(:is='binary' ref='binary' @run='runBinary' @boot='forceShell')
 </template>
 
 <script>
@@ -47,9 +49,74 @@ export default {
 <style lang="scss">
 html, body {
     margin: 0;
+    font-family: 'VT323', monospace;
+    font-feature-settings: "liga" 0;
+    font-size: 24px;
+    color: white;
 }
 
-.app {
-    padding: 10px;
+.screen {
+    display: flex;
+    background-image: radial-gradient(#3b275d 0%, #3a265c 18%, #191247 83%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    animation: textfuzz 3s infinite alternate;
+
+    &__content {
+        padding: 10px;
+        width: 100%;
+    }
+
+    &__lines {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.12) 50%, rgba(0, 0, 0, 0.25) 50%);
+        background-size: 100% 8px;
+    }
+}
+
+@keyframes textfuzz {
+    0% {
+        text-shadow: 0px 0 0 #ec10d9, 0px 0 0 #aae0d7;
+    }
+
+    20% {
+        text-shadow: -1px 0 0 #ec10d9, 1px 0 0 #aae0d7;
+    }
+
+    30% {
+        text-shadow: 0px 0 0 #ec10d9, 0px 0 0 #aae0d7;
+    }
+
+    35% {
+        text-shadow: -1.5px 0 0 #ec10d9, 1.5px 0 0 #aae0d7;
+    }
+
+    55% {
+        text-shadow: 0px 0 0 #ec10d9, 0px 0 0 #aae0d7;
+    }
+
+    60% {
+        text-shadow: -0.5px 0 0 #ec10d9, 0.5px 0 0 #aae0d7;
+    }
+
+    65% {
+        text-shadow: 0px 0 0 #ec10d9, 0px 0 0 #aae0d7;
+    }
+
+    70% {
+        text-shadow: -0.25px 0 0 #ec10d9, 0.25px 0 0 #aae0d7;
+    }
+
+    85% {
+        text-shadow: 0px 0 0 #ec10d9, 0px 0 0 #aae0d7;
+    }
+
+    100% {
+        text-shadow: -1.25px 0 0 #ec10d9, 1.25px 0 0 #aae0d7;
+    }
 }
 </style>

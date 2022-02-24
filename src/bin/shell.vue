@@ -2,7 +2,7 @@
 import binaries from '@/bin'
 import Kernel from '@/components/Kernel'
 
-const excludedCommands = ['shell', 'index']
+const excludedCommands = ['shell', 'index', '']
 
 export default {
     extends: Kernel,

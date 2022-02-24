@@ -62,6 +62,12 @@ html, body {
     min-height: 100vh;
     animation: textfuzz 3s infinite alternate;
 
+    @media not all and (min-resolution:.001dpcm) {
+        @supports (-webkit-appearance:none) {
+            animation: safaritextfuzz 3s infinite alternate;
+        }
+    }
+
     &__content {
         padding: 10px;
         width: 100%;
@@ -80,7 +86,7 @@ html, body {
 
 @keyframes textfuzz {
     0% {
-        text-shadow: 0px 0 0 #ec10d9, 0px 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
     }
 
     20% {
@@ -88,7 +94,7 @@ html, body {
     }
 
     30% {
-        text-shadow: 0px 0 0 #ec10d9, 0px 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
     }
 
     35% {
@@ -96,7 +102,7 @@ html, body {
     }
 
     55% {
-        text-shadow: 0px 0 0 #ec10d9, 0px 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
     }
 
     60% {
@@ -104,7 +110,7 @@ html, body {
     }
 
     65% {
-        text-shadow: 0px 0 0 #ec10d9, 0px 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
     }
 
     70% {
@@ -112,11 +118,53 @@ html, body {
     }
 
     85% {
-        text-shadow: 0px 0 0 #ec10d9, 0px 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
     }
 
     100% {
         text-shadow: -1.25px 0 0 #ec10d9, 1.25px 0 0 #aae0d7;
+    }
+}
+
+@keyframes safaritextfuzz {
+    0% {
+        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+    }
+
+    20% {
+        text-shadow: -2px 0 0 #ec10d9, 2px 0 0 #aae0d7;
+    }
+
+    30% {
+        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+    }
+
+    35% {
+        text-shadow: -2px 0 0 #ec10d9, 2px 0 0 #aae0d7;
+    }
+
+    55% {
+        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+    }
+
+    60% {
+        text-shadow: -2px 0 2px #ec10d9, 2px 0 2px #aae0d7;
+    }
+
+    65% {
+        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+    }
+
+    70% {
+        text-shadow: -2px 0 2px #ec10d9, 2px 0 2px #aae0d7;
+    }
+
+    85% {
+        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+    }
+
+    100% {
+        text-shadow: -2px 0 0 #ec10d9, 2px 0 0 #aae0d7;
     }
 }
 </style>

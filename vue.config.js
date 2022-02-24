@@ -22,7 +22,7 @@ module.exports = defineConfig({
             args[0]['process.env'] = {
                 ...args[0]['process.env'],
                 VUE_APP_VERSION: `"${pkg.version}"`,
-                VUE_APP_BUILD_TIMESTAMP: `"${date.toLocaleString('default', { month: 'short' })} ${date.getDate()} ${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}"`,
+                VUE_APP_BUILD_TIMESTAMP: `"${date.toLocaleString('default', { month: 'short' })} ${date.getDate()} ${date.getFullYear()}, ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}"`,
             }
             return args
         })

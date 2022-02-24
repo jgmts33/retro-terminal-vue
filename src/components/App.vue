@@ -1,5 +1,5 @@
 <template lang="pug">
-.screen(@click='emitClick' :class='{glitching}')
+.screen(@click='emitClick' :class='classes')
     .screen__lines
     .screen__scanline
     .screen__sound(@click='toggleSound')
@@ -26,9 +26,17 @@ export default {
     },
 
     computed: {
+        classes() {
+            const classes = []
+            if (this.glitching) classes.push('glitching')
+            if (this.theme) classes.push(`screen--${this.theme}`)
+            return classes
+        },
+
         ...mapState({
             glitching: (state) => state.glitching,
             sound: (state) => state.sound,
+            theme: (state) => state.theme,
         }),
     },
 
@@ -91,6 +99,18 @@ html, body {
     background-attachment: fixed;
     min-height: 100vh;
     animation: textfuzz 3s infinite alternate;
+
+    &--red {
+        background-image: radial-gradient(#bb275d 0%, #99265c 18%, #771247 83%);
+    }
+
+    &--orange {
+        background-image: radial-gradient(#975e06 0%, #865404 18%, #452c05 83%);
+    }
+
+    &--green {
+        background-image: radial-gradient(#1e4020 0%, #173518 18%, #0f2310 83%);
+    }
 
     @media not all and (min-resolution:.001dpcm) {
         @supports (-webkit-appearance:none) {

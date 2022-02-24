@@ -4,6 +4,7 @@ const store = createStore({
     state: {
         glitching: false,
         sound: false,
+        theme: null,
     },
 
     mutations: {
@@ -13,6 +14,10 @@ const store = createStore({
 
         toggleSound(state) {
             state.sound = !state.sound
+        },
+
+        setTheme(state, theme) {
+            state.theme = theme
         },
     },
 })

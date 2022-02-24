@@ -229,10 +229,10 @@ const song = [
     { start: 29370, end: 31220, lyric: 'because we can.' },
     { start: 32800, end: 35950, lyric: 'For the good of all of us.' },
     {
-        start: 36070, end: 37930, lyric: 'Except the ones who are dead.', art: Art.DANGER,
+        start: 36070, end: 37930, lyric: 'Except the ones who are dead.', art: Art.DANGER, theme: 'red',
     },
     {
-        start: 38310, end: 42060, lyric: "But there's no sense crying over every mistake.", art: Art.APERTURE,
+        start: 38310, end: 42060, lyric: "But there's no sense crying over every mistake.", art: Art.APERTURE, theme: null,
     },
     { start: 42200, end: 46130, lyric: 'You just keep on trying till you run out of cake.' },
     {
@@ -243,21 +243,26 @@ const song = [
         start: 50300, end: 51830, lyric: 'For the people who are', art: Art.APERTURE,
     },
     { start: 52050, end: 53320, lyric: 'still alive.' },
+    { start: 52900, theme: 'orange' },
     { start: 59560, end: 61240, lyric: "I'm not even angry." },
     { start: 63760, end: 67030, lyric: "I'm being so sincere right now." },
     { start: 68810, end: 72269, lyric: 'Even though you broke my heart.' },
     { start: 70810, art: Art.HEART },
     { start: 72270, end: 73510, lyric: 'And killed me.' },
     {
-        start: 75590, end: 77180, lyric: 'And tore me to pieces.', art: Art.EXPLOSION,
+        start: 75590, end: 77180, lyric: 'And tore me to pieces.', art: Art.EXPLOSION, toggleGlitching: true,
     },
-    { start: 79600, end: 82400, lyric: 'And threw every piece into a fire.' },
+    {
+        start: 79600, end: 82400, lyric: 'And threw every piece into a fire.', toggleGlitching: true,
+    },
     { start: 82410, art: Art.FIRE },
     { start: 84840, end: 87900, lyric: 'As they burned it hurt because' },
     {
-        start: 87960, end: 89820, lyric: 'I was so happy for you!', art: Art.CHECK,
+        start: 87960, end: 89820, lyric: 'I was so happy for you!', art: Art.CHECK, theme: 'green',
     },
-    { start: 90000, end: 94230, lyric: 'Now these points of data make a beautiful line.' },
+    {
+        start: 90000, end: 94230, lyric: 'Now these points of data make a beautiful line.',
+    },
     { start: 94310, end: 96140, lyric: "And we're out of beta." },
     { start: 96400, end: 98000, lyric: "We're releasing on time." },
     {
@@ -270,7 +275,9 @@ const song = [
         start: 102330, end: 103800, lyric: 'for the people who are', art: Art.APERTURE,
     },
     { start: 104100, end: 105690, lyric: 'still alive.' },
-    { start: 111860, end: 113750, lyric: 'Go ahead and leave me.' },
+    {
+        start: 111860, end: 113750, lyric: 'Go ahead and leave me.', theme: null,
+    },
     { start: 115500, end: 119170, lyric: 'I think I prefer to stay inside.' },
     { start: 120840, end: 125420, lyric: "Maybe you'll find someone else to help you." },
     { start: 127500, end: 129460, lyric: 'Maybe Black Mesa' },
@@ -281,7 +288,7 @@ const song = [
     { start: 138360, art: Art.CAKE },
     { start: 140000, end: 141960, lyric: "It's so delicious and moist." },
     {
-        start: 142370, end: 144280, lyric: 'Look at me still talking', art: Art.GLADOS,
+        start: 142370, end: 144280, lyric: 'Look at me still talking', art: Art.GLADOS, theme: 'orange',
     },
     {
         start: 144380, end: 146140, lyric: "when there's Science to do.", art: Art.ATOM,
@@ -349,6 +356,7 @@ export default {
 Still Alive is (C)2007 Valve. If you haven't played Portal, you absolutely should.
 `)
             await this.promptAnyKey()
+            this.setTheme(null)
         },
 
         async ensureSound() {
@@ -384,20 +392,18 @@ Still Alive is (C)2007 Valve. If you haven't played Portal, you absolutely shoul
 
         async runPart(part) {
             if (part.art) this.art = part.art
+            if (part.toggleGlitching) this.toggleGlitching()
+            if (part.theme !== undefined) this.setTheme(part.theme)
             if (part.lyric) {
-                const speed = (part.end - part.start) / part.lyric.length
                 await this.output(part.lyric, {
                     delay: 0,
-                    speed,
+                    speed: (part.end - part.start) / part.lyric.length,
                     speak: false,
-                    speechOptions: {
-                        rate: (40 / speed) * 1.3,
-                    },
                 })
             }
         },
 
-        ...mapMutations(['toggleSound']),
+        ...mapMutations(['toggleGlitching', 'toggleSound', 'setTheme']),
     },
 
     watch: {

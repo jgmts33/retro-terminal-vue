@@ -73,6 +73,16 @@ export default {
             if (!val) return
             this.$nextTick(this.focusInput)
         },
+
+        history: {
+            deep: true,
+            async handler() {
+                await this.$nextTick()
+                if ((window.innerHeight + window.pageYOffset) < document.body.offsetHeight - 2) {
+                    window.scrollTo(0, document.body.scrollHeight)
+                }
+            },
+        },
     },
 }
 </script>

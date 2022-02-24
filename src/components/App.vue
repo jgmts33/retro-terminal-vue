@@ -40,6 +40,7 @@ export default {
     },
 
     mounted() {
+        setTimeout(() => window.scrollTo(0, 0), 100)
         this.$listenFor('reboot', () => {
             this.binary = markRaw(Boot)
         })
@@ -62,6 +63,13 @@ html, body {
     font-feature-settings: "liga" 0;
     font-size: 24px;
     color: white;
+
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 .screen {

@@ -42,6 +42,12 @@ export default {
             }
         },
 
+        print(...messages) {
+            messages.forEach((message) => {
+                this.history.push({ input: false, message })
+            })
+        },
+
         input() {
             this.history.push({ input: true, entry: '' })
             return new Promise((resolve) => {

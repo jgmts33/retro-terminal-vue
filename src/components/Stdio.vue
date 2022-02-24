@@ -6,17 +6,21 @@
         autocapitalize='off'
         autocomplete='off'
         ref='activeInput'
+        @keydown='onKeyDown'
         @keydown.enter.prevent='submitEntry'
     )
     .stdio__line(v-for='line, lineIdx in history' :key='lineIdx')
         span(v-if='!line.input') {{ line.message }}
 
         template(v-else)
-            span.stdio__prompt >
-            template(v-if='inputting && lineIdx === history.length - 1')
-                | {{ entry }}
-                .stdio__caret
-            span(v-else) {{ line.entry }}
+            template(v-if='!line.any')
+                span.stdio__prompt >
+                template(v-if='inputting && lineIdx === history.length - 1')
+                    | {{ entry }}
+                    .stdio__caret
+                span(v-else) {{ line.entry }}
+
+            span(v-else) Press any key to continue.
 </template>
 
 <script>
@@ -64,7 +68,16 @@ export default {
             }
         },
 
+        onKeyDown(e) {
+            if (!this.inputIdx) return
+            if (this.history[this.inputIdx].any) {
+                e.stopImmediatePropagation()
+                this.$emit('submit', this.entry.trim())
+            }
+        },
+
         submitEntry() {
+            if (!this.inputIdx) return
             this.$emit('submit', this.entry.trim())
             this.entry = ''
         },

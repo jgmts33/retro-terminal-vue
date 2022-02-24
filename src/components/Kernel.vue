@@ -24,13 +24,14 @@ export default {
         async output(message, opts) {
             opts = {
                 speak: true,
+                speakOptions: null,
                 delay: 1000,
                 speed: 45,
                 ...opts,
             }
             await sleep(opts.delay)
             console.log('Output:', message)
-            if (opts.speak) speak(message)
+            if (opts.speak) speak(message, opts.speechOptions)
             const line = { input: false, message: opts.speed ? '' : message }
             this.history.push(line)
             if (opts.speed) {
@@ -53,6 +54,18 @@ export default {
             return new Promise((resolve) => {
                 this.resolveInput = resolve
             })
+        },
+
+        promptAnyKey() {
+            this.history.push({ input: true, any: true, entry: '' })
+            return new Promise((resolve) => {
+                this.resolveInput = resolve
+            })
+        },
+
+        async clear() {
+            this.history = []
+            await this.output('', { delay: 0 })
         },
 
         handleInput(entry) {

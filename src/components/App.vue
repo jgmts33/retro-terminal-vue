@@ -2,13 +2,15 @@
 .screen(@click='emitClick' :class='{glitching}')
     .screen__lines
     .screen__scanline
+    .screen__sound(@click='toggleSound')
+        i.fas.fa-volume(:class='sound ? "fa-volume" : "fa-volume-off"')
     .screen__content
         component(:is='binary' ref='binary' @run='runBinary' @boot='forceShell')
 </template>
 
 <script>
 import { markRaw } from 'vue'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 import Boot from '@/bin/boot'
 import Shell from '@/bin/shell'
@@ -26,6 +28,7 @@ export default {
     computed: {
         ...mapState({
             glitching: (state) => state.glitching,
+            sound: (state) => state.sound,
         }),
     },
 
@@ -44,6 +47,8 @@ export default {
         forceShell() {
             this.binary = markRaw(Shell)
         },
+
+        ...mapMutations(['toggleSound']),
     },
 
     mounted() {
@@ -80,6 +85,7 @@ html, body {
 }
 
 .screen {
+    position: relative;
     display: flex;
     background-image: radial-gradient(#3b275d 0%, #3a265c 18%, #191247 83%);
     background-attachment: fixed;
@@ -115,6 +121,13 @@ html, body {
         height: $scanline-height;
         background-image: linear-gradient(to bottom, #ec10d900 0%, #ec10d908 95%, #ec10d900 100%);
         animation: scanline 12.5s infinite linear;
+    }
+
+    &__sound {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        opacity: 0.5;
     }
 }
 

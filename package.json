@@ -13,7 +13,8 @@
     "mitt": "^3.0.0",
     "sleep-promise": "^9.1.0",
     "speak-tts": "^2.0.8",
-    "vue": "^3.2.13"
+    "vue": "^3.2.13",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

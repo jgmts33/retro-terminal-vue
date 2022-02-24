@@ -1,5 +1,7 @@
 import Speech from 'speak-tts'
 
+import store from '@/store'
+
 let speech = null
 try {
     speech = new Speech()
@@ -8,7 +10,7 @@ try {
 }
 
 export default async (text, opts) => {
-    if (!speech) return
+    if (!speech || !store.state.sound) return
     try {
         const data = await speech.init({
             lang: 'en-US',

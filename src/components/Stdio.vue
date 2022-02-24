@@ -79,7 +79,7 @@ export default {
     &__line {
         margin-bottom: 3px;
         white-space: pre-wrap;
-        word-break: break-all;
+        word-break: break-word;
     }
 
     &__prompt {

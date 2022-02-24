@@ -43,6 +43,12 @@ export default {
             this.binary = markRaw(Boot)
         })
     },
+
+    watch: {
+        binary() {
+            window.scrollTo(0, 0)
+        },
+    },
 }
 </script>
 

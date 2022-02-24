@@ -1,5 +1,5 @@
 <template lang="pug">
-.screen(@click='emitClick')
+.screen(@click='emitClick' :class='{glitching}')
     .screen__lines
     .screen__scanline
     .screen__content
@@ -8,6 +8,7 @@
 
 <script>
 import { markRaw } from 'vue'
+import { mapState } from 'vuex'
 
 import Boot from '@/bin/boot'
 import Shell from '@/bin/shell'
@@ -20,6 +21,12 @@ export default {
         return {
             binary: markRaw(Boot),
         }
+    },
+
+    computed: {
+        ...mapState({
+            glitching: (state) => state.glitching,
+        }),
     },
 
     methods: {

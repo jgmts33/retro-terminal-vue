@@ -86,85 +86,85 @@ html, body {
 
 @keyframes textfuzz {
     0% {
-        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d9cc, 0 0 0 #aae0d7cc;
     }
 
     20% {
-        text-shadow: -1px 0 0 #ec10d9, 1px 0 0 #aae0d7;
+        text-shadow: -1px 0 0 #ec10d9cc, 1px 0 0 #aae0d7cc;
     }
 
     30% {
-        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d9cc, 0 0 0 #aae0d7cc;
     }
 
     35% {
-        text-shadow: -1.5px 0 0 #ec10d9, 1.5px 0 0 #aae0d7;
+        text-shadow: -1.5px 0 0 #ec10d9cc, 1.5px 0 0 #aae0d7cc;
     }
 
     55% {
-        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d9cc, 0 0 0 #aae0d7cc;
     }
 
     60% {
-        text-shadow: -0.5px 0 0 #ec10d9, 0.5px 0 0 #aae0d7;
+        text-shadow: -0.5px 0 0 #ec10d9cc, 0.5px 0 0 #aae0d7cc;
     }
 
     65% {
-        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d9cc, 0 0 0 #aae0d7cc;
     }
 
     70% {
-        text-shadow: -0.25px 0 0 #ec10d9, 0.25px 0 0 #aae0d7;
+        text-shadow: -0.25px 0 0 #ec10d9cc, 0.25px 0 0 #aae0d7cc;
     }
 
     85% {
-        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d9cc, 0 0 0 #aae0d7cc;
     }
 
     100% {
-        text-shadow: -1.25px 0 0 #ec10d9, 1.25px 0 0 #aae0d7;
+        text-shadow: -1.25px 0 0 #ec10d9cc, 1.25px 0 0 #aae0d7cc;
     }
 }
 
 @keyframes safaritextfuzz {
     0% {
-        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d988, 0 0 0 #aae0d788;
     }
 
     20% {
-        text-shadow: -2px 0 0 #ec10d9, 2px 0 0 #aae0d7;
+        text-shadow: -2px 0 0 #ec10d988, 2px 0 0 #aae0d788;
     }
 
     30% {
-        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d988, 0 0 0 #aae0d788;
     }
 
     35% {
-        text-shadow: -2px 0 0 #ec10d9, 2px 0 0 #aae0d7;
+        text-shadow: -2px 0 0 #ec10d988, 2px 0 0 #aae0d788;
     }
 
     55% {
-        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d988, 0 0 0 #aae0d788;
     }
 
     60% {
-        text-shadow: -2px 0 2px #ec10d9, 2px 0 2px #aae0d7;
+        text-shadow: -2px 0 2px #ec10d988, 2px 0 2px #aae0d788;
     }
 
     65% {
-        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d988, 0 0 0 #aae0d788;
     }
 
     70% {
-        text-shadow: -2px 0 2px #ec10d9, 2px 0 2px #aae0d7;
+        text-shadow: -2px 0 2px #ec10d988, 2px 0 2px #aae0d788;
     }
 
     85% {
-        text-shadow: 0 0 0 #ec10d9, 0 0 0 #aae0d7;
+        text-shadow: 0 0 0 #ec10d988, 0 0 0 #aae0d788;
     }
 
     100% {
-        text-shadow: -2px 0 0 #ec10d9, 2px 0 0 #aae0d7;
+        text-shadow: -2px 0 0 #ec10d988, 2px 0 0 #aae0d788;
     }
 }
 </style>

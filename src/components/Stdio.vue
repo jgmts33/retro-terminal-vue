@@ -2,6 +2,9 @@
 .stdio
     input.stdio__input(
         v-model='entry'
+        type='text'
+        autocapitalize='off'
+        autocomplete='off'
         ref='activeInput'
         @keydown.enter.prevent='submitEntry'
     )

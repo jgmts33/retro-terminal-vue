@@ -2,10 +2,15 @@
 .screen(@click='emitClick' :class='classes')
     .screen__lines
     .screen__scanline
-    .screen__sound(@click='toggleSound')
-        i.fas.fa-volume(:class='sound ? "fa-volume" : "fa-volume-off"')
+
     .screen__content
         component(:is='binary' ref='binary' @run='runBinary' @boot='forceShell')
+
+    .screen__splash(v-if='splash')
+        pre {{ splash }}
+
+    .screen__sound(@click='toggleSound')
+        i.fas.fa-volume(:class='sound ? "fa-volume" : "fa-volume-off"')
 </template>
 
 <script>
@@ -36,6 +41,7 @@ export default {
         ...mapState({
             glitching: (state) => state.glitching,
             sound: (state) => state.sound,
+            splash: (state) => state.splash,
             theme: (state) => state.theme,
         }),
     },
@@ -97,7 +103,6 @@ pre {
 }
 
 .screen {
-    position: relative;
     display: flex;
     background-image: radial-gradient(#3b275d 0%, #3a265c 18%, #191247 83%);
     background-attachment: fixed;
@@ -148,10 +153,27 @@ pre {
     }
 
     &__sound {
-        position: absolute;
+        position: fixed;
         top: 10px;
         right: 10px;
         opacity: 0.5;
+    }
+
+    &__splash {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+
+        pre {
+            background: #00000088;
+            padding: 20px;
+            white-space: pre-wrap;
+        }
     }
 }
 

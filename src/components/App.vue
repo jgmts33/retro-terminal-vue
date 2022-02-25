@@ -92,6 +92,10 @@ html, body {
     }
 }
 
+pre {
+    font-family: 'VT323', monospace;
+}
+
 .screen {
     position: relative;
     display: flex;

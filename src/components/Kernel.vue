@@ -31,7 +31,7 @@ export default {
             }
             await sleep(opts.delay)
             console.log('Output:', message)
-            if (opts.speak) speak(message, opts.speechOptions)
+            if (opts.speak) speak(opts.speak === true ? message : opts.speak, opts.speechOptions)
             const line = { input: false, message: opts.speed ? '' : message }
             this.history.push(line)
             if (opts.speed) {

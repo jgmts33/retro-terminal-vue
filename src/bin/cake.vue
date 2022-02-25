@@ -417,7 +417,6 @@ Still Alive is (C)2007 Valve. If you haven't played Portal, you absolutely shoul
 <style lang="scss" scoped>
 .cake {
     &__art {
-        font-family: 'VT323', monospace;
         position: fixed;
         top: 20px;
         right: 40px;

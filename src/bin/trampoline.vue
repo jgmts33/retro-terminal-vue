@@ -29,21 +29,24 @@ const gameDefaults = {
     scoreIncrease: 0,
     height: 0,
     time: 30000,
+    timeDelta: 0,
+    lastTimestamp: null,
     velocity: 0.9,
     lastJumpVelocity: 0,
     nextJumpVelocity: null,
     missedJump: null,
 }
 
-const FRAME_INTERVAL = 10
-const MIN_JUMP_VELOCITY = 0.7
-const MIN_MISS_VELOCITY = 0.3
-const MAX_FALLING_VELOCITY = -2.0
-const VELOCITY_DECAY = 0.03
-const JUMP_POTENTIAL = 0.2
+const FPS = 60
+const STEP_MS = 1000 / FPS
+const MIN_JUMP_VELOCITY = 1.17
+const MIN_MISS_VELOCITY = 0.5
+const MAX_FALLING_VELOCITY = -3.33
+const VELOCITY_DECAY = 0.05
+const JUMP_POTENTIAL = 0.4
 const HALF_POTENTIAL = JUMP_POTENTIAL / 2
 const MISS_PCT_DECAY = 0.8
-const JUMP_WINDOW = 15
+const JUMP_WINDOW = 13
 const MISSED_WINDOW = 10
 const MIN_FREQUENCY = 100
 const MAX_FREQUENCY = 300
@@ -63,18 +66,14 @@ export default {
             tickScale: 10,
             audioContext,
             gainNode,
-            loopInterval: null,
             oscillator: null,
+            active: false,
             ignoreEnter: false,
             exit: null,
         }
     },
 
     computed: {
-        active() {
-            return this.loopInterval !== null
-        },
-
         scoreHeight() {
             return Math.floor((this.height / 10) ** 2 * this.tickScale)
         },
@@ -97,7 +96,9 @@ export default {
                 this[key] = val
             })
             this.setSplash()
-            this.loopInterval = setInterval(this.loop, FRAME_INTERVAL)
+            this.active = true
+            this.lastTimestamp = window.performance.now()
+            requestAnimationFrame(this.processFrame)
 
             // Set up the audio oscillator
             this.oscillator = this.audioContext.createOscillator()
@@ -136,7 +137,28 @@ export default {
             }
         },
 
+        processFrame(timestamp) {
+            // Request another frame if we aren't due for an update yet
+            if (timestamp < (this.lastTimestamp + STEP_MS)) {
+                return requestAnimationFrame(this.processFrame)
+            }
+
+            // Perform updates based on the time that has passed
+            this.timeDelta += timestamp - this.lastTimestamp
+            this.lastTimestamp = timestamp
+            while (this.timeDelta >= STEP_MS) {
+                if (!this.loop()) return
+                this.timeDelta -= STEP_MS
+            }
+
+            // Request the next frame
+            requestAnimationFrame(this.processFrame)
+        },
+
         loop() {
+            // Ensure we haven't been quit
+            if (!this.active) return false
+
             // Apply physics for this frame
             this.height = Math.min(Math.max(this.height + this.velocity, 0), 100)
             this.oscillator.frequency.value = MIN_FREQUENCY + ((MAX_FREQUENCY - MIN_FREQUENCY) * (this.height / 100))
@@ -146,7 +168,7 @@ export default {
 
             const lastTickVelocity = this.velocity
             this.velocity = Math.max(this.velocity - VELOCITY_DECAY, MAX_FALLING_VELOCITY)
-            this.time -= FRAME_INTERVAL
+            this.time = Math.max(0, this.time - STEP_MS)
 
             // Add points if the user just reached their peak
             if (lastTickVelocity >= 0 && this.velocity < 0) {
@@ -174,8 +196,7 @@ export default {
 
             // Check if the game is over
             if (this.time === 0) {
-                clearInterval(this.loopInterval)
-                this.loopInterval = null
+                this.active = false
                 this.oscillator.stop()
                 this.oscillator = null
                 this.setSplash('GAME OVER\nPress Enter to play again, or Esc to quit.')
@@ -188,7 +209,11 @@ export default {
                 setTimeout(() => {
                     this.ignoreEnter = false
                 }, 1000)
+
+                return false
             }
+
+            return true
         },
 
         onKeyDown(e) {
@@ -215,7 +240,7 @@ export default {
     },
 
     beforeUnmount() {
-        if (this.loopInterval) clearInterval(this.loopInterval)
+        this.active = false
         if (this.oscillator) this.oscillator.stop()
         this.gainNode.disconnect()
         this.audioContext.close()

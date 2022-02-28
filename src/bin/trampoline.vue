@@ -1,5 +1,5 @@
 <template lang="pug">
-.game(@click='jump')
+.game
     .game__score
         div
             | &nbsp;Score: {{ score }}
@@ -237,6 +237,7 @@ export default {
         // Prevent the keystroke from the shell from starting the game
         await sleep(0)
         window.addEventListener('keydown', this.onKeyDown)
+        this.$listenFor('appClick', this.jump)
     },
 
     beforeUnmount() {
@@ -301,6 +302,14 @@ $tick-height: 24px;
     &__character {
         position: relative;
         top: 0%;
+    }
+
+    @media(max-width: 640px) {
+        justify-content: flex-end;
+
+        &__ticks {
+            order: 2;
+        }
     }
 }
 </style>

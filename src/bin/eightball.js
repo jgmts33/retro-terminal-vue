@@ -30,6 +30,7 @@ const knownAnswers = {
     whatistheanswertolifetheuniverseandeverything: '42',
     [`shouldihire${FIRST_NAME.toLowerCase()}`]: 'Without a doubt.',
     shouldihireyou: 'Without a doubt.',
+    isthecakealie: 'Yes.',
 }
 
 export default async ({ output, input }) => {

@@ -23,6 +23,7 @@ const store = createStore({
     state: {
         bestTrampoline: null,
         glitching: false,
+        process: null,
         sound: false,
         splash: null,
         theme: null,
@@ -39,6 +40,10 @@ const store = createStore({
 
         toggleSound(state) {
             state.sound = !state.sound
+        },
+
+        setProcess(state, process) {
+            state.process = process
         },
 
         setSplash(state, splash) {

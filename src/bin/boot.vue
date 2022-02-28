@@ -1,4 +1,5 @@
 <script>
+import { BUILD_TIMESTAMP, FIRST_NAME, VERSION } from '@/config'
 import Kernel from '@/components/Kernel'
 
 export default {
@@ -17,11 +18,11 @@ export default {
         ~~~~~~  ~~ ~~~
            ~~ ~~~~~~
 
-        ${process.env.VUE_APP_FIRST_NAME}OS v${process.env.VUE_APP_VERSION}
+        ${FIRST_NAME}OS v${VERSION}
 
-${process.env.VUE_APP_FIRST_NAME}OS (C)${date.getFullYear()} ${process.env.VUE_APP_FIRST_NAME} Sapan
-BIOS Date ${process.env.VUE_APP_BUILD_TIMESTAMP}
-CPU : Intel(R) Pentum(R) III Processor 900 MHz
+${FIRST_NAME}OS (C)${date.getFullYear()} ${FIRST_NAME} Sapan
+BIOS Date ${BUILD_TIMESTAMP}
+CPU : Intel(R) Pentium(R) III Processor 900 MHz
 Memory Testing: 131072K OK
 
 Auto-Detecting SATA 1...IDE Hard Disk

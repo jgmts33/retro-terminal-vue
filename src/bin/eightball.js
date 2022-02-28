@@ -1,5 +1,6 @@
 import _ from 'lodash'
 
+import { FIRST_NAME } from '@/config'
 import { alphanumeric } from '@/util/text'
 
 const answers = [
@@ -27,7 +28,7 @@ const answers = [
 
 const knownAnswers = {
     whatistheanswertolifetheuniverseandeverything: '42',
-    [`shouldihire${process.env.VUE_APP_FIRST_NAME.toLowerCase()}`]: 'Without a doubt.',
+    [`shouldihire${FIRST_NAME.toLowerCase()}`]: 'Without a doubt.',
     shouldihireyou: 'Without a doubt.',
 }
 

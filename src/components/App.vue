@@ -18,6 +18,7 @@ import { markRaw } from 'vue'
 import { mapState, mapMutations } from 'vuex'
 
 import Boot from '@/bin/boot'
+import { DOMAIN, FULL_NAME } from '@/config'
 import Shell from '@/bin/shell'
 import radio from '@/util/radio'
 
@@ -40,6 +41,7 @@ export default {
 
         ...mapState({
             glitching: (state) => state.glitching,
+            process: (state) => state.process,
             sound: (state) => state.sound,
             splash: (state) => state.splash,
             theme: (state) => state.theme,
@@ -55,6 +57,7 @@ export default {
             this.binary = markRaw(binary)
             await this.$nextTick()
             await this.$refs.binary.run()
+            this.setProcess()
             this.binary = markRaw(Shell)
         },
 
@@ -62,10 +65,15 @@ export default {
             this.binary = markRaw(Shell)
         },
 
-        ...mapMutations(['toggleSound']),
+        updatePageTitle() {
+            document.title = [this.process || FULL_NAME, DOMAIN].join(' | ')
+        },
+
+        ...mapMutations(['toggleSound', 'setProcess']),
     },
 
     mounted() {
+        this.updatePageTitle()
         setTimeout(() => window.scrollTo(0, 0), 100)
         this.$listenFor('reboot', () => {
             this.binary = markRaw(Boot)
@@ -76,6 +84,8 @@ export default {
         binary() {
             window.scrollTo(0, 0)
         },
+
+        process: 'updatePageTitle',
     },
 }
 </script>

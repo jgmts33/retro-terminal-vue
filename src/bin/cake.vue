@@ -361,9 +361,8 @@ Still Alive is (C)2007 Valve. If you haven't played Portal, you absolutely shoul
 
         async ensureSound() {
             if (!this.sound) {
-                await this.output('Cake is best served with sound on. Turn on sound? [Y/N]: ')
-                const response = (await this.input()).toUpperCase()
-                if (response[0] === 'Y' && !this.sound) this.toggleSound()
+                const withSound = await this.confirm('Cake is best served with sound on. Turn on sound?')
+                if (withSound && !this.sound) this.toggleSound()
             }
         },
 

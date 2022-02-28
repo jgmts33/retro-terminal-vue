@@ -56,6 +56,12 @@ export default {
             })
         },
 
+        async confirm(prompt) {
+            await this.output(`${prompt} [Y/N]: `, { speak: prompt })
+            const response = (await this.input()).toUpperCase()
+            return response[0] === 'Y'
+        },
+
         promptAnyKey() {
             this.history.push({ input: true, any: true, entry: '' })
             return new Promise((resolve) => {

@@ -80,6 +80,7 @@ export default {
             if (!this.inputIdx) return
             this.$emit('submit', this.entry.trim())
             this.entry = ''
+            this.$refs.activeInput.blur()
         },
     },
 

@@ -69,11 +69,20 @@ export default {
             document.title = [this.process || FULL_NAME, DOMAIN].join(' | ')
         },
 
+        updateAppHeight() {
+            document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`)
+        },
+
         ...mapMutations(['toggleSound', 'setProcess']),
     },
 
-    mounted() {
+    created() {
+        window.addEventListener('resize', this.updateAppHeight)
+        this.updateAppHeight()
         this.updatePageTitle()
+    },
+
+    mounted() {
         setTimeout(() => window.scrollTo(0, 0), 100)
         this.$listenFor('reboot', () => {
             this.binary = markRaw(Boot)
@@ -92,6 +101,10 @@ export default {
 
 <style lang="scss">
 $scanline-height: 400px;
+
+:root {
+    --app-height: 100vh;
+}
 
 html, body {
     margin: 0;
@@ -117,6 +130,7 @@ pre {
     background-image: radial-gradient(#3b275d 0%, #3a265c 18%, #191247 83%);
     background-attachment: fixed;
     min-height: 100vh;
+    min-height: var(--app-height);
     animation: textfuzz 3s infinite alternate;
 
     &--red {

@@ -14,7 +14,7 @@
 
         template(v-else)
             template(v-if='!line.any')
-                span.stdio__prompt >
+                span.stdio__prompt >&nbsp;
                 template(v-if='inputting && lineIdx === history.length - 1')
                     | {{ entry }}
                     .stdio__caret
@@ -111,10 +111,6 @@ export default {
         margin-bottom: 3px;
         white-space: pre-wrap;
         word-break: break-word;
-    }
-
-    &__prompt {
-        margin-right: 5px;
     }
 
     &__input {

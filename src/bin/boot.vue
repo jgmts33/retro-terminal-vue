@@ -33,7 +33,7 @@ Booting from SATA 1...
 `)
         await this.output('...', { delay: 0 })
         await this.output('...')
-        await this.output('Launching shell...')
+        await this.output('Launching shell...', { speak: false })
         await this.$emit('boot')
     },
 }

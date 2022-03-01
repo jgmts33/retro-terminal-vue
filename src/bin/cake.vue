@@ -329,6 +329,7 @@ export default {
         return {
             art: '',
             audio: null,
+            exited: false,
         }
     },
 
@@ -356,7 +357,6 @@ export default {
 Still Alive is (C)2007 Valve. If you haven't played Portal, you absolutely should.
 `)
             await this.promptAnyKey()
-            this.setTheme(null)
         },
 
         async ensureSound() {
@@ -390,6 +390,7 @@ Still Alive is (C)2007 Valve. If you haven't played Portal, you absolutely shoul
         },
 
         async runPart(part) {
+            if (this.exited) return
             if (part.art) this.art = part.art
             if (part.toggleGlitching) this.toggleGlitching()
             if (part.theme !== undefined) this.setTheme(part.theme)
@@ -403,6 +404,12 @@ Still Alive is (C)2007 Valve. If you haven't played Portal, you absolutely shoul
         },
 
         ...mapMutations(['toggleGlitching', 'toggleSound', 'setTheme']),
+    },
+
+    beforeUnmount() {
+        this.exited = true
+        this.audio.pause()
+        this.setTheme(null)
     },
 
     watch: {

@@ -17,6 +17,11 @@ export default {
         return {
             history: [],
             resolveInput: null,
+
+            // This is intentionally not computed because we don't want it to
+            // change if the program is escaped. This allows us to ignore any
+            // additional speech from the program.
+            instanceKey: this.$store.state.instanceKey,
         }
     },
 
@@ -30,8 +35,7 @@ export default {
                 ...opts,
             }
             await sleep(opts.delay)
-            console.log('Output:', message)
-            if (opts.speak) speak(opts.speak === true ? message : opts.speak, opts.speechOptions)
+            if (opts.speak) speak(opts.speak === true ? message : opts.speak, opts.speechOptions, this.instanceKey)
             const line = { input: false, message: opts.speed ? '' : message }
             this.history.push(line)
             if (opts.speed) {
@@ -75,7 +79,6 @@ export default {
         },
 
         handleInput(entry) {
-            console.log('Input:', entry)
             this.history[this.history.length - 1].entry = entry
             this.resolveInput(entry)
             this.resolveInput = null

@@ -4,7 +4,13 @@
     .screen__scanline
 
     .screen__content
-        component(:is='binary' ref='binary' @run='runBinary' @boot='forceShell')
+        component(
+            :is='binary'
+            ref='binary'
+            @run='runBinary'
+            @boot='forceShell'
+            :key='instanceKey'
+        )
 
     .screen__splash(v-if='splash')
         pre {{ splash }}
@@ -41,6 +47,7 @@ export default {
 
         ...mapState({
             glitching: (state) => state.glitching,
+            instanceKey: (state) => state.instanceKey,
             process: (state) => state.process,
             sound: (state) => state.sound,
             splash: (state) => state.splash,
@@ -63,6 +70,7 @@ export default {
 
         forceShell() {
             this.binary = markRaw(Shell)
+            this.incrementInstanceKey()
         },
 
         updatePageTitle() {
@@ -73,11 +81,17 @@ export default {
             document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`)
         },
 
-        ...mapMutations(['toggleSound', 'setProcess']),
+        onKeyDown(e) {
+            if (e.repeat) return
+            if (e.key === 'Escape' || (e.key === 'c' && e.ctrlKey)) this.forceShell()
+        },
+
+        ...mapMutations(['toggleSound', 'incrementInstanceKey', 'setProcess']),
     },
 
     created() {
         window.addEventListener('resize', this.updateAppHeight)
+        window.addEventListener('keydown', this.onKeyDown)
         this.updateAppHeight()
         this.updatePageTitle()
     },

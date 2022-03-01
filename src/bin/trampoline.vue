@@ -69,7 +69,6 @@ export default {
             oscillator: null,
             active: false,
             ignoreEnter: false,
-            exit: null,
         }
     },
 
@@ -86,9 +85,7 @@ export default {
 
     methods: {
         run() {
-            return new Promise((resolve) => {
-                this.exit = resolve
-            })
+            return new Promise(() => {})
         },
 
         startGame() {
@@ -219,7 +216,6 @@ export default {
         onKeyDown(e) {
             if (e.repeat || this.ignoreEnter) return
             if (e.key === 'Enter') this.jump()
-            if (e.key === 'Escape') this.exit()
         },
 
         ...mapMutations(['setBestTrampoline', 'setSplash']),

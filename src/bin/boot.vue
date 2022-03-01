@@ -1,12 +1,14 @@
 <script>
 import { BUILD_TIMESTAMP, FIRST_NAME, VERSION } from '@/config'
 import Kernel from '@/components/Kernel'
+import store from '@/store'
 
 export default {
     extends: Kernel,
 
     async mounted() {
         const date = new Date()
+        const instanceKey = store.state.instanceKey
         this.print(`
            @@@@@@@@@
         @@@@@@@@@@@@@@@
@@ -34,7 +36,7 @@ Booting from SATA 1...
         await this.output('...', { delay: 0 })
         await this.output('...')
         await this.output('Launching shell...', { speak: false })
-        await this.$emit('boot')
+        if (store.state.instanceKey === instanceKey) await this.$emit('boot')
     },
 }
 </script>

@@ -9,8 +9,10 @@ try {
     console.warn('Speech synthesis not supported.')
 }
 
-export default async (text, opts) => {
-    if (!speech || !store.state.sound) return
+export default async (text, opts, instanceKey) => {
+    // Skip if speech isn't available, sound is off, or this is from a program that was escaped
+    if (!speech || !store.state.sound || (instanceKey && instanceKey !== store.state.instanceKey)) return
+
     try {
         const data = await speech.init({
             lang: 'en-US',

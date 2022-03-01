@@ -34,9 +34,9 @@ export const intro = async (output) => {
 }
 
 export const loadWord = async () => {
-    const response = await fetch('https://raw.githubusercontent.com/charlesreid1/five-letter-words/master/sgb-words.txt')
-    const words = (await response.text()).split('\n')
-    words.pop()
+    // Choose a random 5 letter word from a gist of 1000 common words
+    const response = await fetch('https://gist.githubusercontent.com/deekayen/4148741/raw/98d35708fa344717d8eee15d11987de6c8e26d7d/1-1000.txt')
+    const words = _.filter((await response.text()).split('\n'), (w) => w.length === 5)
     return _.sample(words)
 }
 

@@ -1,4 +1,7 @@
 import _ from 'lodash'
+import sleep from 'sleep-promise'
+
+import store from '@/store'
 
 const Room = {
     farm: 'Farm',
@@ -9,6 +12,7 @@ const Room = {
     pelicanTownSouthwest: 'Southwest Pelican Town',
     pelicanTownSoutheast: 'Southeast Pelican Town',
 
+    saloon: 'The Stardrop Saloon',
     evergreenWoods: 'Evergreen Woods',
     beach: 'Beach',
 
@@ -25,6 +29,23 @@ const aliases = {
     s: 'south',
     e: 'east',
     w: 'west',
+}
+
+const foods = {
+    beer: {
+        name: 'Beer',
+        price: 400,
+    },
+
+    salad: {
+        name: 'Salad',
+        price: 220,
+    },
+
+    pizza: {
+        name: 'Pizza',
+        price: 600,
+    },
 }
 
 const swords = {
@@ -101,10 +122,10 @@ const rooms = {
     [Room.pelicanTownSouthwest]: {
         description: 'TODO',
         actions: {
-            // TODO: shops
             north: go(Room.pelicanTownNorthwest),
             east: go(Room.pelicanTownSoutheast),
             west: go(Room.evergreenWoods),
+            saloon: go(Room.saloon),
         },
     },
 
@@ -127,13 +148,45 @@ const rooms = {
                     ])
 
                     game.abigailKnows = (choice === 3)
-                    await game.kernel.output('"Oh, how fun!" Abigail exclaims. "I have to run a few errands but maybe I\'ll run into you later."\n\nAs Abigail proceeds to leave you decide to follow her out. No sense in staying in an empty graveyard.')
+                    await game.kernel.output('"Oh, how fun!" Abigail shouts with excitement. "I have to run a few errands but maybe I\'ll run into you later."\n\nAs Abigail proceeds to leave you decide to follow her out. No sense in staying in an empty graveyard.')
                 } else {
                     // Abigail is already gone
                     await game.kernel.output("The graveyard is still peaceful, though definitely quieter without the crunching. There's a squirrel rustling about.")
                 }
             },
         },
+    },
+
+    [Room.saloon]: (game) => {
+        const gusMessage = game.metGus ? '"Welcome back!" Gus exclaims.' : "\"Well hello there!\" the bartender exclaims. \"I'm Gus, the chef and owner of the Stardrop Saloon. Stop in if you need any refreshments. I've always got hot food and cold beer at the ready.\""
+        game.metGus = true
+        return {
+            description: `The sounds of raucous laughter and clanging glasses fill your ears the moment you open the saloon door. It's a very lively place, and everybody seems to be having a great time.\n\n${gusMessage}`,
+            actions: {
+                async order() {
+                    await game.kernel.output("\"Let me know what you're in the mood for.\"")
+                    const food = await game.openShop(foods, game.food)
+                    if (food === false) {
+                        await game.kernel.output('"Nothing looked appetizing? Come back if you change your mind!"')
+                    } else if (food === null) {
+                        await game.kernel.output("\"I'd love to give you that but I need to keep the lights on. Feel free to come back if there's something else you want to buy.\"")
+                    } else if (food === foods.beer) {
+                        game.food.pop()
+                        game.beersConsumed += 1
+                        await game.kernel.output("Gus hands you an ice cold pint. It's a craft New England IPA, and it's delicious.")
+                        if (game.beersConsumed === 3) {
+                            await sleep(1000)
+                            store.commit('toggleGlitching')
+                            await game.kernel.output("Of course, you're hardly tasting the beer at this point.", { delay: 0 })
+                        }
+                    } else {
+                        await game.kernel.output(`"Enjoy!" Gus declares eagerly.\n\nYou're not super hungry so you put the ${food.name} in your pocket for later.`)
+                    }
+                },
+                jukebox: "The jukebox is playing some classic saloon music. It has a great vibe and is certainly contributing to everyone's mood - you wouldn't want to change that.",
+                leave: go(Room.pelicanTownSouthwest),
+            },
+        }
     },
 
     [Room.evergreenWoods]: {
@@ -169,15 +222,13 @@ const rooms = {
         },
     },
 
-    [Room.mountainsEast](game, lastRoom) {
-        return {
-            description: lastRoom === Room.mountainsWest ? "You walk past the mines and come across a small cabin tucked in the trees. The sign above the door says \"Adventurer's Guild\"." : 'You head out of the guild.',
-            actions: {
-                west: go(Room.mountainsWest),
-                guild: go(Room.adventurersGuild),
-            },
-        }
-    },
+    [Room.mountainsEast]: (game, lastRoom) => ({
+        description: lastRoom === Room.mountainsWest ? "You walk past the mines and come across a small cabin tucked in the trees. The sign above the door says \"Adventurer's Guild\"." : 'You head out of the guild.',
+        actions: {
+            west: go(Room.mountainsWest),
+            guild: go(Room.adventurersGuild),
+        },
+    }),
 
     [Room.adventurersGuild]: {
         description: "You enter the guild and are greeted by a burly man wearing an eye patch.\n\n\"Hey, good afternoon.\" Marlon says. \"Let me know if you want to shop. I'm sure Gil over there wouldn't mind sharing some old stories with you either.\"",
@@ -214,10 +265,13 @@ class AmethystGame {
 
         // Inventory
         this.gold = 2000
+        this.food = []
         this.swords = []
 
         // Story
         this.abigailKnows = null
+        this.beersConsumed = 0
+        this.metGus = false
     }
 
     async runRoom(roomId, lastRoomId) {

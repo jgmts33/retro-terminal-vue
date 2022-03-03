@@ -14,10 +14,12 @@ const sections = [
     {
         name: 'Games',
         commands: [
+            'amethyst',
             'retrodle',
             'trampoline',
         ],
         pronounciations: [
+            'amethyst',
             'retro-dull',
             'trampoline',
         ],

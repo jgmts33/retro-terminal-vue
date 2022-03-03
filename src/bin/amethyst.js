@@ -27,6 +27,32 @@ const aliases = {
     w: 'west',
 }
 
+const swords = {
+    woodenBlade: {
+        name: 'Wooden Blade',
+        price: 250,
+        level: 1,
+    },
+
+    silverSaber: {
+        name: 'Wooden Blade',
+        price: 750,
+        level: 2,
+    },
+
+    cutlass: {
+        name: 'Cutlass',
+        price: 1500,
+        level: 3,
+    },
+
+    claymore: {
+        name: 'Claymore',
+        price: 2000,
+        level: 5,
+    },
+}
+
 export const go = (room) => {
     // Warn about room name typos
     if (!room) console.warn('Invalid room reference')
@@ -101,7 +127,7 @@ const rooms = {
                     ])
 
                     game.abigailKnows = (choice === 3)
-                    await game.kernel.output('"Oh, how fun!", Abigail exclaims. "I have to run a few errands but maybe I\'ll run into you later."\n\nAs Abigail proceeds to leave you decide to follow her out. No sense in staying in an empty graveyard.')
+                    await game.kernel.output('"Oh, how fun!" Abigail exclaims. "I have to run a few errands but maybe I\'ll run into you later."\n\nAs Abigail proceeds to leave you decide to follow her out. No sense in staying in an empty graveyard.')
                 } else {
                     // Abigail is already gone
                     await game.kernel.output("The graveyard is still peaceful, though definitely quieter without the crunching. There's a squirrel rustling about.")
@@ -144,17 +170,28 @@ const rooms = {
     },
 
     [Room.mountainsEast]: {
-        description: 'TODO',
+        description: "You walk past the mines and come across a small cabin tucked in the trees. The sign above the door says \"Adventurer's Guild\".",
         actions: {
             west: go(Room.mountainsWest),
-            shop: go(Room.adventurersGuild),
+            guild: go(Room.adventurersGuild),
         },
     },
 
     [Room.adventurersGuild]: {
-        description: 'TODO',
+        description: "You enter the guild and are greeted by a burly man wearing an eye patch.\n\n\"Hey, good afternoon.\" Marlon says. \"Let me know if you want to shop. I'm sure Gil over there wouldn't mind sharing some old stories with you either.\"",
         actions: {
-            // TODO: do something in the shop?
+            async shop(game) {
+                await game.kernel.output("\"If you're looking for a sword, you've come to the right place!\" Marlon boasts. \"What're ya buyin?\"")
+                const sword = await game.openShop(swords, game.swords)
+                if (sword === false) {
+                    await game.kernel.output('"Not interested in anything, huh? That\'s alright, come back if you change your mind."')
+                } else if (sword === null) {
+                    await game.kernel.output('"Feel free to come back if there\'s something else you want to buy instead."')
+                } else {
+                    await game.kernel.output('"Great choice! Best of luck to you out there."')
+                }
+            },
+            gil: "You approach Gil, he's enjoying his rocking chair by the fireplace. He stares at you for a moment, seemingly taking you in. Finally, he says:\n\"I used to be an adventurer like you, then I took an arrow in the knee.\"",
             leave: go(Room.mountainsEast),
         },
     },
@@ -172,6 +209,12 @@ const INSTANT = { delay: 0, speed: 0, speak: false }
 class AmethystGame {
     constructor(kernel) {
         this.kernel = kernel
+
+        // Inventory
+        this.gold = 2000
+        this.swords = []
+
+        // Story
         this.abigailKnows = null
     }
 
@@ -217,6 +260,29 @@ class AmethystGame {
             }
         }
         return response
+    }
+
+    async openShop(stock, pocket) {
+        // Let the player know how much gold they have and ask what they want to buy
+        const stockList = _.toArray(stock)
+        await this.kernel.output(`\n[You have ${this.gold} gold.]`, INSTANT)
+        const choice = await this.promptChoice([
+            ..._.map(stockList, (s) => `${s.name} (${s.price} gold)`),
+            'Nevermind',
+        ])
+        const item = stockList[choice - 1]
+        if (!item) return false
+
+        // Check that they can buy this item
+        if (this.gold < item.price) {
+            await this.kernel.output("You can't afford that.")
+            return null
+        }
+
+        // Complete the purchase
+        this.gold -= item.price
+        pocket.push(item)
+        return item
     }
 }
 

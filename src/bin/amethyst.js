@@ -160,7 +160,7 @@ const rooms = {
     },
 
     [Room.mountainsWest]: {
-        description: 'TODO',
+        description: "You come to a mountainous clearing featuring a crystal clear lake. The tranquility of nature surrounds you. There appears to be a mine entrance to the North, and there's trails in every direction.",
         actions: {
             north: go(Room.mines1),
             south: go(Room.pelicanTownNortheast),
@@ -169,12 +169,14 @@ const rooms = {
         },
     },
 
-    [Room.mountainsEast]: {
-        description: "You walk past the mines and come across a small cabin tucked in the trees. The sign above the door says \"Adventurer's Guild\".",
-        actions: {
-            west: go(Room.mountainsWest),
-            guild: go(Room.adventurersGuild),
-        },
+    [Room.mountainsEast](game, lastRoom) {
+        return {
+            description: lastRoom === Room.mountainsWest ? "You walk past the mines and come across a small cabin tucked in the trees. The sign above the door says \"Adventurer's Guild\"." : 'You head out of the guild.',
+            actions: {
+                west: go(Room.mountainsWest),
+                guild: go(Room.adventurersGuild),
+            },
+        }
     },
 
     [Room.adventurersGuild]: {
@@ -218,10 +220,10 @@ class AmethystGame {
         this.abigailKnows = null
     }
 
-    async runRoom(roomId) {
+    async runRoom(roomId, lastRoomId) {
         // Get the room state if it is dynamic
         let room = rooms[roomId]
-        if (typeof room === 'function') room = await room(this)
+        if (typeof room === 'function') room = await room(this, lastRoomId)
 
         // Present the room and its available actions
         await this.kernel.output(`[${roomId}]`, INSTANT)
@@ -237,7 +239,7 @@ class AmethystGame {
             if (!action) {
                 await this.kernel.output("You can't do that here.")
             } else if (action.go) {
-                await this.runRoom(action.go)
+                await this.runRoom(action.go, roomId)
                 break
             } else if (typeof action === 'function') {
                 await action(this)

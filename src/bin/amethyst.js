@@ -52,8 +52,8 @@ const aliases = {
     s: 'south',
     e: 'east',
     w: 'west',
-    d: 'down',
-    u: 'up',
+    d: 'descend',
+    c: 'climb',
 }
 
 const foods = {
@@ -223,7 +223,7 @@ const rooms = {
     },
 
     [Room.beach]: {
-        description: 'You walk out over the boardwalk and take in the majestic view of the ocean. The salty air fills your lungs.',
+        description: 'After crossing a bridge you find yourself on a beach. You walk out over the boardwalk and take in the majestic view of the ocean. The salty air fills your lungs.',
         actions: {
             north: go(Room.pelicanTownSoutheast),
         },
@@ -277,10 +277,10 @@ const rooms = {
     },
 
     [Room.minesEntrance]: {
-        description: "You walk through the cavernous mine entrance. A torch is casting a soft glow on the walls. It's a fairly small space, but you see a ladder that you can climb down.",
+        description: "You walk through the cavernous mine entrance. A torch is casting a soft glow on the walls. It's a fairly small space, but you see a ladder that you can descend down.",
         actions: {
             south: go(Room.mountainsWest),
-            down: go(Room.mines1),
+            descend: go(Room.mines1),
         },
     },
 
@@ -288,7 +288,7 @@ const rooms = {
         description: "You carefully step down the ladder. It's surprisingly illuminated down here, especially compared to the floor above.\n\nNothing valuable immediately pops out at you.",
         actions: {
             explore: go(Room.mines1Explore),
-            up: go(Room.minesEntrance),
+            climb: go(Room.minesEntrance),
         },
     },
 

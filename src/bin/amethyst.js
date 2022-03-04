@@ -364,7 +364,6 @@ class AmethystGame {
         if (typeof room === 'function') room = await room(this, lastRoomId)
 
         // Present the room and its available actions
-        await this.kernel.output(`[${roomId}]`, INSTANT)
         await this.kernel.output(room.description)
         await this.kernel.output(`Available actions: ${Object.keys(room.actions).join(', ')}`, INSTANT)
 

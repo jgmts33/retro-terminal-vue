@@ -21,7 +21,10 @@ const Room = {
     mountainsEast: 'East Mountains',
     adventurersGuild: "Adventurer's Guild",
 
+    minesEntrance: 'The Mines',
     mines1: 'The Mines: Floor 1',
+    mines1Explore: 'The Mines: Explore Floor 1',
+    mines2: 'The Mines: Floor 2',
 }
 
 const aliases = {
@@ -29,6 +32,8 @@ const aliases = {
     s: 'south',
     e: 'east',
     w: 'west',
+    d: 'down',
+    u: 'up',
 }
 
 const foods = {
@@ -52,25 +57,25 @@ const swords = {
     woodenBlade: {
         name: 'Wooden Blade',
         price: 250,
-        level: 1,
+        damage: 5,
     },
 
     silverSaber: {
-        name: 'Wooden Blade',
+        name: 'Silver Saber',
         price: 750,
-        level: 2,
+        damage: 10,
     },
 
     cutlass: {
         name: 'Cutlass',
         price: 1500,
-        level: 3,
+        damage: 15,
     },
 
     claymore: {
         name: 'Claymore',
         price: 2000,
-        level: 5,
+        damage: 17,
     },
 }
 
@@ -165,7 +170,7 @@ const rooms = {
             actions: {
                 async order() {
                     await game.kernel.output("\"Let me know what you're in the mood for.\"")
-                    const food = await game.openShop(foods, game.food)
+                    const food = await game.shop(foods, game.food)
                     if (food === false) {
                         await game.kernel.output('"Nothing looked appetizing? Come back if you change your mind!"')
                     } else if (food === null) {
@@ -215,7 +220,7 @@ const rooms = {
     [Room.mountainsWest]: {
         description: "You come to a mountainous clearing featuring a crystal clear lake. The tranquility of nature surrounds you. There appears to be a mine entrance to the North, and there's trails in every direction.",
         actions: {
-            north: go(Room.mines1),
+            north: go(Room.minesEntrance),
             south: go(Room.pelicanTownNortheast),
             east: go(Room.mountainsEast),
             west: go(Room.mountainTrail),
@@ -235,12 +240,14 @@ const rooms = {
         actions: {
             async shop(game) {
                 await game.kernel.output("\"If you're looking for a sword, you've come to the right place!\" Marlon boasts. \"What're ya buyin?\"")
-                const sword = await game.openShop(swords, game.swords)
+                const sword = await game.shop(swords, game.swords)
                 if (sword === false) {
                     await game.kernel.output('"Not interested in anything, huh? That\'s alright, come back if you change your mind."')
                 } else if (sword === null) {
                     await game.kernel.output('"Feel free to come back if there\'s something else you want to buy instead."')
                 } else {
+                    // Set the player's sword to the strongest one they own
+                    game.sword = _.maxBy(game.swords, 'damage')
                     await game.kernel.output('"Great choice! Best of luck to you out there."')
                 }
             },
@@ -249,15 +256,60 @@ const rooms = {
         },
     },
 
+    [Room.minesEntrance]: {
+        description: "You walk through the cavernous mine entrance. A torch is casting a soft glow on the walls. It's a fairly small space, but you see a ladder that you can climb down.",
+        actions: {
+            south: go(Room.mountainsWest),
+            down: go(Room.mines1),
+        },
+    },
+
     [Room.mines1]: {
+        description: "You carefully step down the ladder. It's surprisingly illuminated down here, especially compared to the floor above.\n\nNothing valuable immediately pops out at you.",
+        actions: {
+            explore: go(Room.mines1Explore),
+            up: go(Room.minesEntrance),
+        },
+    },
+
+    [Room.mines1Explore]: {
+        description: 'Which part of the floor do you want to focus on exploring?',
+        actions: {
+            left: "There's some coal, but not much else.",
+            center: 'Nothing but rocks!',
+            async right(game) {
+                await game.kernel.output("As you're exploring the right side of the floor, a Green Slime jumps out from behind one of the rocks! It has you cornered - your only chance is to fight it.\n\n")
+                if (!game.sword) {
+                    await game.kernel.output("You reach for your sword, but you don't have one on you! The Slime attacks you until you pass out.")
+                    return { win: false }
+                }
+
+                await game.kernel.output(`You lock eyes with the Slime, ready your ${game.sword.name}, and prepare for battle.`)
+                if (await game.battle('Green Slime', 24, 5)) {
+                    // The player won
+                    await game.kernel.output('The slime fades away as you wipe the sweat from your face. After patting yourself on the back, you pick up some copper ore that you noticed during the battle. You head down a ladder that was hiding around the corner.')
+                    await game.runRoom(Room.mines2)
+                } else {
+                    return { win: false }
+                }
+            },
+            cancel: go(Room.mines1),
+        },
+    },
+
+    [Room.mines2]: {
         description: 'TODO',
         actions: {
+        },
+    },
 
         },
     },
 }
 
 const INSTANT = { delay: 0, speed: 0, speak: false }
+
+const PLAYER_HP = 50
 
 class AmethystGame {
     constructor(kernel) {
@@ -267,6 +319,7 @@ class AmethystGame {
         this.gold = 2000
         this.food = []
         this.swords = []
+        this.sword = null
 
         // Story
         this.abigailKnows = null
@@ -296,7 +349,13 @@ class AmethystGame {
                 await this.runRoom(action.go, roomId)
                 break
             } else if (typeof action === 'function') {
-                await action(this)
+                const result = await action(this)
+
+                // Check if the result of the action caused the game to end
+                if (result?.win !== undefined) {
+                    await this.gameOver(result.win)
+                    return
+                }
             } else if (typeof action === 'string') {
                 // Annouce the result of the action but prompt for another one
                 await this.kernel.output(action)
@@ -318,7 +377,7 @@ class AmethystGame {
         return response
     }
 
-    async openShop(stock, pocket) {
+    async shop(stock, pocket) {
         // Let the player know how much gold they have and ask what they want to buy
         const stockList = _.toArray(stock)
         await this.kernel.output(`\n[You have ${this.gold} gold.]`, INSTANT)
@@ -339,6 +398,63 @@ class AmethystGame {
         this.gold -= item.price
         pocket.push(item)
         return item
+    }
+
+    async battle(name, slimeHp, slimeDamage) {
+        // Set up the battle
+        let playerHp = PLAYER_HP
+        await this.kernel.output(`\n\n=== BATTLE ===\n${name} (${slimeHp} HP)\n[You have ${playerHp} HP.]`, INSTANT)
+
+        // Battle until someone runs out of health
+        while (slimeHp > 0 && playerHp > 0) {
+            // The player goes first
+            const choice = await this.promptChoice([
+                `Regular attack (${this.sword.damage} damage, 100% accuracy)`,
+                `Critical attack (${this.sword.damage * 2} damage, 50% accuracy)`,
+                ..._.map(this.food, (f) => `Eat ${f.name} (fully heal)`),
+            ])
+
+            if (choice <= 2) {
+                // The player is attacking
+                const damage = this.sword.damage * choice
+                const hit = (_.random(1, choice) === 1)
+                if (hit) {
+                    slimeHp = Math.max(slimeHp - damage, 0)
+                    await this.kernel.output(`The ${name} takes ${damage} damage. (${slimeHp} HP left)`)
+                    if (slimeHp === 0) return true
+                } else {
+                    await this.kernel.output(`The ${name} evades your attack.`)
+                }
+            } else {
+                // The player is eating
+                const food = this.food.splice(choice - 3, 1)[0]
+                playerHp = PLAYER_HP
+                await this.kernel.output(`You eat the delicious ${food.name} and feel instantly rejuvenated!`)
+            }
+
+            // Have the Slime attack
+            playerHp = Math.max(playerHp - slimeDamage, 0)
+            await this.kernel.output(`The ${name} attacks you for ${slimeDamage} damage. (${playerHp} HP left)`)
+            if (playerHp === 0) return false
+        }
+    }
+
+    async gameOver(win) {
+        if (!win) {
+            await this.kernel.output('\n\n--- GAME OVER ---\n\n\n', {
+                speechOptions: {
+                    rate: 0.7,
+                    pitch: 0.7,
+                },
+            })
+        } else {
+            await this.kernel.output('\n\n*** !!! YOU WIN !!! ***\n\n\n', {
+                speechOptions: {
+                    rate: 0.7,
+                    pitch: 0.7,
+                },
+            })
+        }
     }
 }
 

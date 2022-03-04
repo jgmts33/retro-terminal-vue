@@ -23,10 +23,12 @@
 import { markRaw } from 'vue'
 import { mapState, mapMutations } from 'vuex'
 
+import { isShellBinary } from '@/bin'
 import Boot from '@/bin/boot'
-import { DOMAIN, FULL_NAME } from '@/config'
 import Shell from '@/bin/shell'
+import { DOMAIN, FULL_NAME } from '@/config'
 import radio from '@/util/radio'
+import { binaryFromUrl } from '@/util/url'
 
 export default {
     name: 'App',
@@ -94,6 +96,16 @@ export default {
         window.addEventListener('keydown', this.onKeyDown)
         this.updateAppHeight()
         this.updatePageTitle()
+
+        // Interrupt the boot sequence if the user wants to jump into a specific binary
+        const urlBinary = binaryFromUrl()
+        if (urlBinary) {
+            if (isShellBinary(urlBinary)) {
+                this.forceShell()
+            } else {
+                this.runBinary(urlBinary.default)
+            }
+        }
     },
 
     mounted() {

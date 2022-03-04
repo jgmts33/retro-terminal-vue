@@ -1,9 +1,10 @@
 <script>
 import { mapMutations } from 'vuex'
 
-import binaries from '@/bin'
+import binaries, { isShellBinary } from '@/bin'
 import { BUILD_TIMESTAMP, DOMAIN, VERSION } from '@/config'
 import Kernel, { INSTANT } from '@/components/Kernel'
+import { binaryFromUrl } from '@/util/url'
 
 const excludedCommands = ['shell', 'index', '']
 
@@ -17,6 +18,11 @@ export default {
         const firstShell = this.$store.state.firstShell
         this.setFirstShell(false)
 
+        // Jump right into the URL's binary if that exists
+        const urlBinary = binaryFromUrl()
+        if (urlBinary && isShellBinary(urlBinary) && firstShell) await urlBinary.default(this)
+
+        // Start the normal shell process
         await this.output(`${DOMAIN} v${VERSION} (default, ${BUILD_TIMESTAMP})`, INSTANT)
         await this.output('Type "help" for more information.', firstShell ? null : INSTANT)
         this.setFirstShell(false)
@@ -30,7 +36,7 @@ export default {
                 continue
             } else if (binary) {
                 this.setProcess(command)
-                if (typeof binary.default === 'function') {
+                if (isShellBinary(binary)) {
                     await binary.default(this, input)
                 } else {
                     this.$emit('run', binary.default)

@@ -25,6 +25,7 @@ const Room = {
     mines1: 'The Mines: Floor 1',
     mines1Explore: 'The Mines: Explore Floor 1',
     mines2: 'The Mines: Floor 2',
+    mines3: 'The Mines: Floor 3',
 }
 
 const aliases = {
@@ -298,11 +299,41 @@ const rooms = {
     },
 
     [Room.mines2]: {
-        description: 'TODO',
+        description: 'This floor thankfully seems more calm than the last. Which side do you want to explore first?',
         actions: {
+            async left(game) {
+                await game.kernel.output('You find some iron ore! You also find a ladder which you take down to the next floor.')
+                await game.runRoom(Room.mines3)
+            },
+            right: 'Just some crushed stone.',
         },
     },
 
+    [Room.mines3]: {
+        description: "You're still not sure why the floors are getting brighter the deeper you go down. Maybe there will be some fantastic finds. Which side do you explore first?",
+        actions: {
+            async left(game) {
+                await game.kernel.output('You reach down to pick up some gold ore, but a Blue Slime catches you off guard and attacks!')
+                if (await game.battle('Blue Slime', 90, 12)) {
+                    // The player won
+                    await game.kernel.output('As you deal the final blow you make a break for the ladder - just in case any of its friends decide to show up!')
+                    await game.kernel.output("You're still catching your breath when you spot the purest amethyst you've ever seen. You reach down to pick it up when, you guessed it, a slime attacks!\n\nAs you look at your opponent you realize this is no ordinary slime... this is a legendary Red Slime. You're not sure how you found yourself in this situation, but there's no escape. The thought crosses your mind that you really should keep a better eye on your exits in the future, but right now you're just hoping you have a future.", { speed: 50, delay: 2000 })
+                    if (game.abigailKnows) {
+                        // Have Abigail save the player when they get down to 2 HP
+                        await game.battle('Red Slime', 150, 24, 2)
+                        await sleep(1000)
+                        await game.kernel.output("You're feeling incredibly faint. You know you're losing this fight, and the Red Slime isn't letting up.\n\nYou're about to give up when... you hear a woman calling your name.\n\n\"Don't give up!\" Abigail screams as she bursts into the room. \"Take this!\" she erupts as she unleashes the wrath of her Galaxy Sword, utterly vanquishing your foe.\n\nYou're still in shock as she comes over to check on you. \"Are you okay?\" Abigail asks. \"I'm so glad I decided to join you!\"\n\nYou nod and take a moment to catch your breath. You remember the amethyst in your pocket, and offer it to Abigail as thanks for saving you.\n\nAbigail takes a look at the amethyst and smiles a big grin. \"Hey, how'd you know I was hungry? This looks delicious!\"", { speed: 50 })
+                        return { win: true }
+                    }
+
+                    // The player is doomed, too bad
+                    await game.battle('Red Slime', 150, 24)
+                    return { win: false }
+                }
+                return { win: false }
+            },
+            center: 'You pick up a bit of wood off of the ground, not much else to see though.',
+            right: "You find some quartz! There's no ladder over here though.",
         },
     },
 }
@@ -400,7 +431,7 @@ class AmethystGame {
         return item
     }
 
-    async battle(name, slimeHp, slimeDamage) {
+    async battle(name, slimeHp, slimeDamage, playerHpThreshold = 0) {
         // Set up the battle
         let playerHp = PLAYER_HP
         await this.kernel.output(`\n\n=== BATTLE ===\n${name} (${slimeHp} HP)\n[You have ${playerHp} HP.]`, INSTANT)
@@ -435,7 +466,7 @@ class AmethystGame {
             // Have the Slime attack
             playerHp = Math.max(playerHp - slimeDamage, 0)
             await this.kernel.output(`The ${name} attacks you for ${slimeDamage} damage. (${playerHp} HP left)`)
-            if (playerHp === 0) return false
+            if (playerHp <= playerHpThreshold) return false
         }
     }
 
@@ -449,9 +480,9 @@ class AmethystGame {
             })
         } else {
             await this.kernel.output('\n\n*** !!! YOU WIN !!! ***\n\n\n', {
+                speak: 'YOU WIN!',
                 speechOptions: {
-                    rate: 0.7,
-                    pitch: 0.7,
+                    pitch: 1.2,
                 },
             })
         }

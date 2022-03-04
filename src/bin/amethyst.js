@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import sleep from 'sleep-promise'
 
+import { INSTANT } from '@/components/Kernel'
 import store from '@/store'
 
 const title = [
@@ -308,9 +309,9 @@ const rooms = {
                     // The player won
                     await game.kernel.output('The slime fades away as you wipe the sweat from your face. After patting yourself on the back, you pick up some copper ore that you noticed during the battle. You head down a ladder that was hiding around the corner.')
                     await game.runRoom(Room.mines2)
-                } else {
-                    return { win: false }
+                    return false
                 }
+                return { win: false }
             },
             cancel: go(Room.mines1),
         },
@@ -322,6 +323,7 @@ const rooms = {
             async left(game) {
                 await game.kernel.output('You find some iron ore! You also find a ladder which you take down to the next floor.')
                 await game.runRoom(Room.mines3)
+                return false
             },
             right: 'Just some crushed stone.',
         },
@@ -356,8 +358,6 @@ const rooms = {
     },
 }
 
-const INSTANT = { delay: 0, speed: 0, speak: false }
-
 const PLAYER_HP = 50
 
 class AmethystGame {
@@ -374,6 +374,22 @@ class AmethystGame {
         this.abigailKnows = null
         this.beersConsumed = 0
         this.metGus = false
+    }
+
+    async start() {
+        await this.showSplashScreen()
+        await this.runRoom(Room.farm)
+    }
+
+    async showSplashScreen() {
+        await Promise.all(_.map(title, (line, lineIdx) => this.kernel.output(line, {
+            speed: 20 - lineIdx,
+            speak: lineIdx === 0 ? 'Amethyst' : false,
+            speechOptions: {
+                pitch: 1.2,
+                rate: 0.7,
+            },
+        })))
     }
 
     async runRoom(roomId, lastRoomId) {
@@ -395,9 +411,13 @@ class AmethystGame {
                 await this.kernel.output("You can't do that here.")
             } else if (action.go) {
                 await this.runRoom(action.go, roomId)
-                break
+                return
             } else if (typeof action === 'function') {
                 const result = await action(this)
+
+                // Don't prompt for another action if the action indicates
+                // that it resulted in running another room
+                if (result === false) return
 
                 // Check if the result of the action caused the game to end
                 if (result?.win !== undefined) {
@@ -507,17 +527,6 @@ class AmethystGame {
 }
 
 export default async (kernel) => {
-    // Introduce the game
-    await Promise.all(_.map(title, (line, lineIdx) => kernel.output(line, {
-        speed: 20 - lineIdx,
-        speak: lineIdx === 0 ? 'Amethyst' : false,
-        speechOptions: {
-            pitch: 1.2,
-            rate: 0.7,
-        },
-    })))
-
-    // Start at the farm
     const game = new AmethystGame(kernel)
-    await game.runRoom(Room.farm)
+    await game.start()
 }

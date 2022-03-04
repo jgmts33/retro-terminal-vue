@@ -3,6 +3,24 @@ import sleep from 'sleep-promise'
 
 import store from '@/store'
 
+const title = [
+    '\n',
+    '                                  ___       ___                               ___',
+    '                                 (   )     (   )                             (   )',
+    '  .---.   ___ .-. .-.     .--.    | |_      | | .-.    ___  ___      .--.     | |_',
+    ' / .-, \\ (   )   \'   \\   /    \\  (   __)    | |/   \\  (   )(   )   /  _  \\   (   __)',
+    '(__) ; |  |  .-.  .-. ; |  .-. ;  | |       |  .-. .   | |  | |   . .\' `. ;   | |',
+    '  .\'`  |  | |  | |  | | |  | | |  | | ___   | |  | |   | |  | |   | \' | |   | | ___',
+    '        / .\'| |  | |  | |  | | |  |/  |  | |(   )  | |  | |   | \' | | _\\_`.(___)  | |(   )',
+    '| /  | |  | |  | |  | | |  \' _.\'  | | | |   | |  | |   \'  `- \' |  (   ). \'.    | | | |',
+    '; |  ; |  | |  | |  | | |  .\'.-.  | \' | |   | |  | | `.__. |   | |  `\\ |   | \' | |',
+    '    \' `-\' |  | |  | |  | | \'  `-\' / \' `-\';   | |  | | ___ | |   ; \'._,\' \'   \' `-\' ;',
+    '`.__.\'_. (___)(___)(___) `.__.\'    `.__.   (___)(___)  (   )\' |    \'.___.\'     `.__.',
+    '                                                        ; `-\' \'',
+    '                                                         .__.\'',
+    '\n',
+]
+
 const Room = {
     farm: 'Farm',
 
@@ -145,7 +163,7 @@ const rooms = {
             async graveyard(game) {
                 if (game.abigailKnows === null) {
                     // Abigail is in the graveyard and asks the player what they're up to
-                    await game.kernel.output('You walk into the graveyard and take a moment to appreciate how peaceful it looks during the day.\n\nYou observe Abigail hanging out in the corner, as usual. She notices you and jogs over to greet you. While crunching on an amethyst, she says:\n"Hey, fancy seeing you here! What\'re you up to today?"')
+                    await game.kernel.output('You walk into the graveyard and take a moment to appreciate how peaceful it looks during the day.\n\nYou observe Abigail hanging out in the corner, as usual. She notices you and jogs over to greet you. While crunching on an Amethyst, she says:\n"Hey, fancy seeing you here! What\'re you up to today?"')
                     const choice = await game.promptChoice([
                         "I'm taking a stroll around town to see if there's anything interesting happening",
                         "I'm trying to get into the bus off of the wooded trail",
@@ -317,12 +335,12 @@ const rooms = {
                 if (await game.battle('Blue Slime', 90, 12)) {
                     // The player won
                     await game.kernel.output('As you deal the final blow you make a break for the ladder - just in case any of its friends decide to show up!')
-                    await game.kernel.output("You're still catching your breath when you spot the purest amethyst you've ever seen. You reach down to pick it up when, you guessed it, a slime attacks!\n\nAs you look at your opponent you realize this is no ordinary slime... this is a legendary Red Slime. You're not sure how you found yourself in this situation, but there's no escape. The thought crosses your mind that you really should keep a better eye on your exits in the future, but right now you're just hoping you have a future.", { speed: 50, delay: 2000 })
+                    await game.kernel.output("You're still catching your breath when you spot the purest Amethyst you've ever seen. You reach down to pick it up when, you guessed it, a slime attacks!\n\nAs you look at your opponent you realize this is no ordinary slime... this is a legendary Red Slime. You're not sure how you found yourself in this situation, but there's no escape. The thought crosses your mind that you really should keep a better eye on your exits in the future, but right now you're just hoping you have a future.", { speed: 50, delay: 2000 })
                     if (game.abigailKnows) {
                         // Have Abigail save the player when they get down to 2 HP
                         await game.battle('Red Slime', 150, 24, 2)
                         await sleep(1000)
-                        await game.kernel.output("You're feeling incredibly faint. You know you're losing this fight, and the Red Slime isn't letting up.\n\nYou're about to give up when... you hear a woman calling your name.\n\n\"Don't give up!\" Abigail screams as she bursts into the room. \"Take this!\" she erupts as she unleashes the wrath of her Galaxy Sword, utterly vanquishing your foe.\n\nYou're still in shock as she comes over to check on you. \"Are you okay?\" Abigail asks. \"I'm so glad I decided to join you!\"\n\nYou nod and take a moment to catch your breath. You remember the amethyst in your pocket, and offer it to Abigail as thanks for saving you.\n\nAbigail takes a look at the amethyst and smiles a big grin. \"Hey, how'd you know I was hungry? This looks delicious!\"", { speed: 50 })
+                        await game.kernel.output("You're feeling incredibly faint. You know you're losing this fight, and the Red Slime isn't letting up.\n\nYou're about to give up when... you hear a woman calling your name.\n\n\"Don't give up!\" Abigail screams as she bursts into the room. \"Take this!\" she erupts as she unleashes the wrath of her Galaxy Sword, utterly vanquishing your foe.\n\nYou're still in shock as she comes over to check on you. \"Are you okay?\" Abigail asks. \"I'm so glad I decided to join you!\"\n\nYou nod and take a moment to catch your breath. You remember the Amethyst in your pocket, and offer it to Abigail as thanks for saving you.\n\nAbigail takes a look at the Amethyst and smiles a big grin. \"Hey, how'd you know I was hungry? This looks delicious!\"", { speed: 50 })
                         return { win: true }
                     }
 
@@ -489,6 +507,17 @@ class AmethystGame {
 }
 
 export default async (kernel) => {
+    // Introduce the game
+    await Promise.all(_.map(title, (line, lineIdx) => kernel.output(line, {
+        speed: 20 - lineIdx,
+        speak: lineIdx === 0 ? 'Amethyst' : false,
+        speechOptions: {
+            pitch: 1.2,
+            rate: 0.7,
+        },
+    })))
+
+    // Start at the farm
     const game = new AmethystGame(kernel)
     await game.runRoom(Room.farm)
 }

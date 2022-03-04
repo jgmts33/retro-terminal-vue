@@ -22,6 +22,8 @@ const store = createStore({
 
     state: {
         bestTrampoline: null,
+        firstShell: true,
+        firstHelp: true,
         glitching: false,
         instanceKey: 0,
         process: null,
@@ -33,6 +35,14 @@ const store = createStore({
     mutations: {
         setBestTrampoline(state, score) {
             state.bestTrampoline = score
+        },
+
+        setFirstShell(state, val) {
+            state.firstShell = val
+        },
+
+        setFirstHelp(state, val) {
+            state.firstHelp = val
         },
 
         toggleGlitching(state) {
@@ -57,6 +67,14 @@ const store = createStore({
 
         setTheme(state, theme) {
             state.theme = theme
+        },
+
+        reboot(state) {
+            state.firstShell = true
+            state.firstHelp = true
+            state.glitching = false
+            state.splash = null
+            state.theme = null
         },
     },
 })

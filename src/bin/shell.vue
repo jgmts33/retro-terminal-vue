@@ -3,18 +3,23 @@ import { mapMutations } from 'vuex'
 
 import binaries from '@/bin'
 import { BUILD_TIMESTAMP, DOMAIN, VERSION } from '@/config'
-import Kernel from '@/components/Kernel'
+import Kernel, { INSTANT } from '@/components/Kernel'
 
 const excludedCommands = ['shell', 'index', '']
 
 export default {
     extends: Kernel,
 
-    methods: mapMutations(['setProcess']),
+    methods: mapMutations(['setFirstShell', 'setProcess']),
 
     async mounted() {
-        await this.output(`${DOMAIN} v${VERSION} (default, ${BUILD_TIMESTAMP})`, { speak: false, delay: 0, speed: 0 })
-        await this.output('Type "help" for more information.')
+        // Make a note of whether this is the first shell instance since boot
+        const firstShell = this.$store.state.firstShell
+        this.setFirstShell(false)
+
+        await this.output(`${DOMAIN} v${VERSION} (default, ${BUILD_TIMESTAMP})`, INSTANT)
+        await this.output('Type "help" for more information.', firstShell ? null : INSTANT)
+        this.setFirstShell(false)
 
         while (true) { // eslint-disable-line no-constant-condition
             this.setProcess()

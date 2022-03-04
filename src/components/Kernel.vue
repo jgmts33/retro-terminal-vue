@@ -8,6 +8,8 @@ import sleep from 'sleep-promise'
 import Stdio from '@/components/Stdio'
 import speak from '@/util/speech'
 
+export const INSTANT = { speak: false, delay: 0, speed: 0 }
+
 export default {
     name: 'Kernel',
 

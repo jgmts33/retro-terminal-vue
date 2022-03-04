@@ -106,9 +106,8 @@ const rooms = {
     },
 
     [Room.pelicanTownNorthwest]: {
-        description: 'TODO',
+        description: "You're at the start of Pelican Town. You take in the charming houses surrounding the town plaza.",
         actions: {
-            // TODO: shops
             east: go(Room.pelicanTownNortheast),
             south: go(Room.pelicanTownSouthwest),
             west: go(Room.pelicanTownTrail),
@@ -116,22 +115,23 @@ const rooms = {
     },
 
     [Room.pelicanTownNortheast]: {
-        description: 'TODO',
+        description: "There's a huge shop in this part of town. The sign on the door says \"Pierre's General Store\".",
         actions: {
-            // TODO: shops
             north: go(Room.mountainsWest),
             south: go(Room.pelicanTownSoutheast),
             west: go(Room.pelicanTownNorthwest),
+            pierres: "As you go to open the door, you notice a smaller sign that reads \"Closed on Wednesdays\".\n\n\"Of course it's Wednesday\" you chuckle to yourself.",
         },
     },
 
     [Room.pelicanTownSouthwest]: {
-        description: 'TODO',
+        description: "You're downtown. A girl is sitting up against a tree. You can hear some excitement coming from the Saloon.",
         actions: {
             north: go(Room.pelicanTownNorthwest),
             east: go(Room.pelicanTownSoutheast),
             west: go(Room.evergreenWoods),
             saloon: go(Room.saloon),
+            girl: "\"If you dig in the dirt you can find some interesting things.\" she says. \"One time I found a really old piece of pottery. I brought it to Gunther and he said it was over a thousand years old.\"\n\nYou're not sure why she chose to say that. It reminds you of something an NPC would say in a video game, but you shrug it off.",
         },
     },
 

@@ -434,15 +434,22 @@ class AmethystGame {
     async promptChoice(choices) {
         const choicesStr = _.map(choices, (c, idx) => `${idx + 1}) ${c}`).join('\n')
         await this.kernel.output(`\n${choicesStr}`, INSTANT)
-        let response = null
-        while (!response) {
-            response = parseInt(await this.kernel.input())
-            if (Number.isNaN(response) || response < 1 || response > choices.length) {
-                await this.kernel.output(`Please enter a number between 1 and ${choices.length}.`)
-                response = null
+        while (true) { // eslint-disable-line no-constant-condition
+            const response = await this.kernel.input()
+            const responseInt = parseInt(response)
+
+            if (Number.isNaN(responseInt)) {
+                // Check if the player entered the first word of an option
+                const firstWord = response.toLowerCase().split(' ')[0]
+                for (const [choiceIdx, choice] of choices.entries()) {
+                    if (choice.toLowerCase().split(' ')[0] === firstWord) return choiceIdx + 1
+                }
+            } else if (responseInt >= 1 && responseInt <= choices.length) {
+                return responseInt
             }
+
+            await this.kernel.output(`Invalid choice. Please enter a number between 1 and ${choices.length}.`)
         }
-        return response
     }
 
     async shop(stock, pocket) {

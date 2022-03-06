@@ -1,5 +1,10 @@
-<h3 align="center">Terminal</h3>
-This is my personal website, inspired by retro computer terminals. It's primarily just a fun project I've wanted to build for awhile. I hope you enjoy playing around with it!
+<h3 align="center">Retro Terminal</h3>
+
+<div align="center">
+    <img src="https://user-images.githubusercontent.com/3203257/156942532-ce731f6f-abd5-4d77-a159-71aeddc908bd.png" width="500px">
+</div>
+
+This is my personal website, inspired by a retro computer terminal. It's primarily just a fun project I've wanted to build for awhile. I hope you enjoy playing around with it!
 
 ### Getting started
 Assuming you have node and yarn installed, clone the repo and run:

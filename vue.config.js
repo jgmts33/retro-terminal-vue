@@ -10,8 +10,10 @@ module.exports = defineConfig({
     pages: {
         index: {
             entry: 'src/main.js',
-            title: `${process.env.VUE_APP_FIRST_NAME} Sapan`,
+            experience: new Date().getFullYear() - 2009,
+            firstName: process.env.VUE_APP_FIRST_NAME,
             measurementId: process.env.MEASUREMENT_ID,
+            title: `${process.env.VUE_APP_FIRST_NAME} Sapan`,
         },
     },
 

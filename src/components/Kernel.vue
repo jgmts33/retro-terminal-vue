@@ -45,7 +45,7 @@ export default {
                     // Add a new empty line (or the completed line if speed was unset)
                     const line = { input: false, message: opts.speed ? '' : message }
                     this.history.push(line)
-                    if (!opts.speed) return resolve()
+                    if (!opts.speed || !message.length) return resolve()
 
                     // Prepare to type the text to the screen
                     const lineIdx = this.history.length - 1

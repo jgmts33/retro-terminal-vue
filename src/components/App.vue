@@ -30,6 +30,8 @@ import { DOMAIN, FULL_NAME } from '@/config'
 import radio from '@/util/radio'
 import { binaryFromUrl } from '@/util/url'
 
+const { gtag } = window
+
 export default {
     name: 'App',
 
@@ -77,6 +79,14 @@ export default {
 
         updatePageTitle() {
             document.title = [this.process || FULL_NAME, DOMAIN].join(' | ')
+            gtag('event', 'page_view', {
+                page_title: document.title,
+                page_location: `${window.location.href}${this.process}`,
+            })
+        },
+
+        pulse() {
+            gtag('event', 'pulse', { process: this.process || 'shell' })
         },
 
         updateAppHeight() {
@@ -96,6 +106,7 @@ export default {
         window.addEventListener('keydown', this.onKeyDown)
         this.updateAppHeight()
         this.updatePageTitle()
+        setInterval(this.pulse, 60000)
 
         // Interrupt the boot sequence if the user wants to jump into a specific binary
         const urlBinary = binaryFromUrl()

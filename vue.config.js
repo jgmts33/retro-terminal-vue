@@ -7,6 +7,14 @@ const date = new Date()
 module.exports = defineConfig({
     transpileDependencies: true,
 
+    pages: {
+        index: {
+            entry: 'src/main.js',
+            title: `${process.env.VUE_APP_FIRST_NAME} Sapan`,
+            measurementId: process.env.MEASUREMENT_ID,
+        },
+    },
+
     chainWebpack: (config) => {
         config.plugin('eslint').tap((args) => {
             args[0].fix = true

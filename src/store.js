@@ -26,7 +26,7 @@ const store = createStore({
         firstHelp: true,
         glitching: false,
         instanceKey: 0,
-        process: null,
+        process: undefined,
         sound: false,
         splash: null,
         theme: null,

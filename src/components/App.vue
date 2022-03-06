@@ -173,7 +173,7 @@ pre {
 
     @media not all and (min-resolution:.001dpcm) {
         @supports (-webkit-appearance:none) {
-            animation: safaritextfuzz 3s infinite alternate;
+            animation: safaritextfuzz 7s infinite alternate steps(10, jump-none);
         }
     }
 

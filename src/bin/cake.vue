@@ -1,7 +1,7 @@
 <template lang="pug">
 .cake
     stdio.cake__shell(:history='history' :inputting='!!resolveInput' @submit='handleInput')
-    pre.cake__art {{ art }}
+    pre.cake__art(v-if='art') {{ art }}
 </template>
 
 <script>
@@ -10,8 +10,8 @@ import sleep from 'sleep-promise'
 import { markRaw } from 'vue'
 import { mapState, mapMutations } from 'vuex'
 
+import { CDN_URL } from '@/config'
 import Kernel from '@/components/Kernel'
-import StillAlive from '@/sounds/still-alive.mp3'
 
 const Art = {
     APERTURE: `             .,-:;//;:=,
@@ -368,8 +368,9 @@ Still Alive is (C)2007 Valve. If you haven't played Portal, you absolutely shoul
 
         loadAudio() {
             return new Promise((resolve) => {
-                this.audio = markRaw(new Audio(StillAlive))
+                this.audio = markRaw(new Audio(`${CDN_URL}/still-alive.mp3`))
                 this.audio.oncanplaythrough = resolve
+                this.audio.load()
             })
         },
 
